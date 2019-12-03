@@ -5,12 +5,17 @@ import {createSortTemplate} from "./components/sort";
 import {createFormEditTemplate} from "./components/form-edit";
 import {createTripDaysTemplate} from "./components/trip-days";
 import {createTripCardTemplate} from "./components/trip-card";
+import {generateFormEdit} from "./mock/form-edit";
+import {generateTripCards} from "./mock/form-edit";
 
-const TASK_COUNT = 3;
+const CARDS_COUNT = 5;
+
 
 const render = (container, template, place) => {
   container.insertAdjacentHTML(place, template);
 };
+
+const editForm = generateFormEdit();
 
 const tripInfoElement = document.querySelector(`.trip-main__trip-info`);
 render(tripInfoElement, createRouteTemplate(), `afterbegin`);
@@ -23,11 +28,13 @@ render(menuTitleElement, createSiteMenuTemplate(), `beforebegin`);
 
 const tripEventsElement = document.querySelector(`.trip-events`);
 render(tripEventsElement, createSortTemplate(), `beforeend`);
-render(tripEventsElement, createFormEditTemplate(), `beforeend`);
+render(tripEventsElement, createFormEditTemplate(editForm), `beforeend`);
 render(tripEventsElement, createTripDaysTemplate(), `beforeend`);
 
 const tripListElement = tripEventsElement.querySelector(`.trip-events__list`);
+const tripCards = generateTripCards(CARDS_COUNT);
+tripCards.forEach((tripCard) => render(tripListElement, createTripCardTemplate(tripCard), `beforeend`));
 
-new Array(TASK_COUNT).fill(``).forEach(
-    () => render(tripListElement, createTripCardTemplate(), `beforeend`)
-);
+// new Array(TASK_COUNT).fill(``).forEach(
+//     () => render(tripListElement, createTripCardTemplate(), `beforeend`)
+// );
