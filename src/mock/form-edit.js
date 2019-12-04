@@ -66,7 +66,7 @@ const options = [
 ];
 
 const generateOptionsList = () => {
-  return shuffleArray(options).slice(0, getRandomRange(0, 3));
+  return shuffleArray(options).slice(0, getRandomRange(0, 2));
 };
 
 const generatePhotos = () => {

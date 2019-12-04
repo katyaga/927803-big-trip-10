@@ -2,7 +2,19 @@ import {formatTime} from "../utils";
 
 export const createTripCardTemplate = (tripCard) => {
 
-  const {type, city, price, dateStart, dateEnd} = tripCard;
+  const {type, city, price, options, dateStart, dateEnd} = tripCard;
+
+  const createOptionsList = () => {
+    return options.map((option) => {
+      return (
+        `<li class="event__offer">
+          <span class="event__offer-title">${option.name}</span>
+          &plus;
+          &euro;&nbsp;<span class="event__offer-price">${option.price}</span>
+         </li>`
+      );
+    }).join(`\n`);
+  };
 
   return (
     `<li class="trip-events__item">
@@ -27,11 +39,7 @@ export const createTripCardTemplate = (tripCard) => {
         
         <h4 class="visually-hidden">Offers:</h4>
         <ul class="event__selected-offers">
-          <li class="event__offer">
-            <span class="event__offer-title">Add breakfast</span>
-            &plus;
-            &euro;&nbsp;<span class="event__offer-price">50</span>
-           </li>
+          ${createOptionsList()}
         </ul>
 
         <button class="event__rollup-btn" type="button">
@@ -41,5 +49,6 @@ export const createTripCardTemplate = (tripCard) => {
     </li>`
   );
 };
+
 
 
