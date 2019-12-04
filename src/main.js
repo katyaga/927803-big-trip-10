@@ -18,16 +18,17 @@ const render = (container, template, place) => {
 };
 
 const editForm = generateFormEdit();
+const filters = generateFilters();
+const siteMenu = generateSiteMenu();
+const tripCards = generateTripCards(CARDS_COUNT);
 
 const tripInfoElement = document.querySelector(`.trip-main__trip-info`);
-render(tripInfoElement, createRouteTemplate(), `afterbegin`);
+render(tripInfoElement, createRouteTemplate(tripCards), `afterbegin`);
 
 const tripControlsElement = document.querySelector(`.trip-main__trip-controls`);
-const filters = generateFilters();
 render(tripControlsElement, createFilterTemplate(filters), `beforeend`);
 
 const menuTitleElement = tripControlsElement.querySelector(`h2`);
-const siteMenu = generateSiteMenu();
 render(menuTitleElement, createSiteMenuTemplate(siteMenu), `beforebegin`);
 
 const tripEventsElement = document.querySelector(`.trip-events`);
@@ -36,5 +37,4 @@ render(tripEventsElement, createFormEditTemplate(editForm), `beforeend`);
 render(tripEventsElement, createTripDaysTemplate(), `beforeend`);
 
 const tripListElement = tripEventsElement.querySelector(`.trip-events__list`);
-const tripCards = generateTripCards(CARDS_COUNT);
 tripCards.forEach((tripCard) => render(tripListElement, createTripCardTemplate(tripCard), `beforeend`));

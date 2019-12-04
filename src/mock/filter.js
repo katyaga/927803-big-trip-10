@@ -1,5 +1,7 @@
 const filterNames = [
-  `everything`, `future`, `past`
+  `everything`,
+  `future`,
+  `past`,
 ];
 
 const generateFilters = () => {

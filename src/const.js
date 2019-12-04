@@ -1,4 +1,9 @@
-export const cities = [`Amsterdam`, `Geneva`, `Chamonix`, `Saint Petersburg`];
+export const cities = [
+  `Amsterdam`,
+  `Geneva`,
+  `Chamonix`,
+  `Saint Petersburg`,
+];
 
 export const eventTypes = [
   {
@@ -51,4 +56,19 @@ export const eventTypes = [
     title: `Restaurant`,
     group: `activity`,
   },
+];
+
+export const MonthNames = [
+  `Jan`,
+  `Feb`,
+  `Mar`,
+  `Apr`,
+  `May`,
+  `Jun`,
+  `Jul`,
+  `Aug`,
+  `Sep`,
+  `Oct`,
+  `Nov`,
+  `Dec`,
 ];

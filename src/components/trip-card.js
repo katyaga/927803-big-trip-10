@@ -5,7 +5,8 @@ export const createTripCardTemplate = (tripCard) => {
   const {type, city, price, options, dateStart, dateEnd} = tripCard;
 
   const createOptionsList = () => {
-    return options.map((option) => {
+    let visibleOptions = (options.length > 3) ? options.slice(0, 3) : options;
+    return visibleOptions.map((option) => {
       return (
         `<li class="event__offer">
           <span class="event__offer-title">${option.name}</span>
@@ -36,7 +37,7 @@ export const createTripCardTemplate = (tripCard) => {
         <p class="event__price">
           &euro;&nbsp;<span class="event__price-value">${price}</span>
         </p>
-        
+
         <h4 class="visually-hidden">Offers:</h4>
         <ul class="event__selected-offers">
           ${createOptionsList()}
