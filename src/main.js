@@ -4,30 +4,35 @@ import {createFilterTemplate} from "./components/filter";
 import {createSortTemplate} from "./components/sort";
 import {createFormEditTemplate} from "./components/form-edit";
 import {createTripDaysTemplate} from "./components/trip-days";
-import {createTripCardTemplate} from "./components/trip-card";
-
-const TASK_COUNT = 3;
+import {generateFormEdit, generateTripDays, getTripCost} from "./mock/form-edit";
+import {generateSiteMenu} from "./mock/site-menu";
+import {generateFilters} from "./mock/filter";
 
 const render = (container, template, place) => {
   container.insertAdjacentHTML(place, template);
 };
 
+const editForm = generateFormEdit();
+const filters = generateFilters();
+const siteMenu = generateSiteMenu();
+
+const tripDays = generateTripDays();
+
+
 const tripInfoElement = document.querySelector(`.trip-main__trip-info`);
-render(tripInfoElement, createRouteTemplate(), `afterbegin`);
+const tripCostElement = tripInfoElement.querySelector(`.trip-info__cost-value`);
+tripCostElement.innerHTML = getTripCost(tripDays);
+render(tripInfoElement, createRouteTemplate(tripDays), `afterbegin`);
 
 const tripControlsElement = document.querySelector(`.trip-main__trip-controls`);
-render(tripControlsElement, createFilterTemplate(), `beforeend`);
+render(tripControlsElement, createFilterTemplate(filters), `beforeend`);
 
 const menuTitleElement = tripControlsElement.querySelector(`h2`);
-render(menuTitleElement, createSiteMenuTemplate(), `beforebegin`);
+render(menuTitleElement, createSiteMenuTemplate(siteMenu), `beforebegin`);
 
 const tripEventsElement = document.querySelector(`.trip-events`);
 render(tripEventsElement, createSortTemplate(), `beforeend`);
-render(tripEventsElement, createFormEditTemplate(), `beforeend`);
-render(tripEventsElement, createTripDaysTemplate(), `beforeend`);
+render(tripEventsElement, createFormEditTemplate(editForm), `beforeend`);
+render(tripEventsElement, createTripDaysTemplate(tripDays), `beforeend`);
 
-const tripListElement = tripEventsElement.querySelector(`.trip-events__list`);
 
-new Array(TASK_COUNT).fill(``).forEach(
-    () => render(tripListElement, createTripCardTemplate(), `beforeend`)
-);
