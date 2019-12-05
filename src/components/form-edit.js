@@ -60,7 +60,7 @@ export const createFormEditTemplate = (formEdit) => {
             <fieldset class="event__type-group">
               <legend class="visually-hidden">Transfer</legend>
               ${createEventTypeItem(eventTypes, `transfer`)}
-              
+
             </fieldset>
 
             <fieldset class="event__type-group">
@@ -73,7 +73,7 @@ export const createFormEditTemplate = (formEdit) => {
 
         <div class="event__field-group  event__field-group--destination">
           <label class="event__label  event__type-output" for="event-destination-1">
-            Sightseeing at
+            ${type.title} at
           </label>
           <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${city}" list="destination-list-1">
           <datalist id="destination-list-1">

@@ -4,14 +4,9 @@ import {createFilterTemplate} from "./components/filter";
 import {createSortTemplate} from "./components/sort";
 import {createFormEditTemplate} from "./components/form-edit";
 import {createTripDaysTemplate} from "./components/trip-days";
-import {createTripCardTemplate} from "./components/trip-card";
-import {generateFormEdit} from "./mock/form-edit";
-import {generateTripCards} from "./mock/form-edit";
+import {generateFormEdit, generateTripDays, getTripCost} from "./mock/form-edit";
 import {generateSiteMenu} from "./mock/site-menu";
 import {generateFilters} from "./mock/filter";
-
-const CARDS_COUNT = 5;
-
 
 const render = (container, template, place) => {
   container.insertAdjacentHTML(place, template);
@@ -20,10 +15,14 @@ const render = (container, template, place) => {
 const editForm = generateFormEdit();
 const filters = generateFilters();
 const siteMenu = generateSiteMenu();
-const tripCards = generateTripCards(CARDS_COUNT);
+
+const tripDays = generateTripDays();
+
 
 const tripInfoElement = document.querySelector(`.trip-main__trip-info`);
-render(tripInfoElement, createRouteTemplate(tripCards), `afterbegin`);
+const tripCostElement = tripInfoElement.querySelector(`.trip-info__cost-value`);
+tripCostElement.innerHTML = getTripCost(tripDays);
+render(tripInfoElement, createRouteTemplate(tripDays), `afterbegin`);
 
 const tripControlsElement = document.querySelector(`.trip-main__trip-controls`);
 render(tripControlsElement, createFilterTemplate(filters), `beforeend`);
@@ -34,7 +33,6 @@ render(menuTitleElement, createSiteMenuTemplate(siteMenu), `beforebegin`);
 const tripEventsElement = document.querySelector(`.trip-events`);
 render(tripEventsElement, createSortTemplate(), `beforeend`);
 render(tripEventsElement, createFormEditTemplate(editForm), `beforeend`);
-render(tripEventsElement, createTripDaysTemplate(), `beforeend`);
+render(tripEventsElement, createTripDaysTemplate(tripDays), `beforeend`);
 
-const tripListElement = tripEventsElement.querySelector(`.trip-events__list`);
-tripCards.forEach((tripCard) => render(tripListElement, createTripCardTemplate(tripCard), `beforeend`));
+

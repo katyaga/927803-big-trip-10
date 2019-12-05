@@ -73,7 +73,7 @@ const generatePhotos = () => {
 
 const generateFormEdit = () => {
   const currentDate = Date.now();
-  const date = generateRandomDate(currentDate, 2, 30);
+  const date = generateRandomDate(currentDate, 2, 10);
 
   return {
     type: getRandomElement(eventTypes),
@@ -83,7 +83,7 @@ const generateFormEdit = () => {
     options: generateOptionsList(),
     price: getPrice(5, 40),
     dateStart: date,
-    dateEnd: generateRandomDate(date, 0, 3),
+    dateEnd: generateRandomDate(date, 0, 1),
   };
 };
 
@@ -93,10 +93,10 @@ const generateOrderedDates = (card, index, cards) => {
     let previousCard = cards[index - 1];
     let currentCard = cards[index];
     currentCard.dateStart = new Date(previousCard.dateEnd.valueOf());
-    currentCard.dateStart.setHours(currentCard.dateStart.getHours() + 15);
+    currentCard.dateStart.setHours(currentCard.dateStart.getHours() + 7);
 
     currentCard.dateEnd = new Date(currentCard.dateStart.valueOf());
-    currentCard.dateEnd.setHours(currentCard.dateEnd.getHours() + 18);
+    currentCard.dateEnd.setHours(currentCard.dateEnd.getHours() + 10);
   }
 
   return card;
@@ -108,4 +108,33 @@ const generateTripCards = (count) => {
   return tripCards.map(generateOrderedDates);
 };
 
-export {generateFormEdit, generateTripCards};
+const generateTripDays = () => {
+  let tripDays = [];
+  let currentCards = [];
+
+  generateTripCards(getRandomRange(3, 10)).forEach((card, i, cards) => {
+    let previousCard = i > 0 ? cards[i - 1] : null;
+
+    if (previousCard && card.dateStart.getDate() !== previousCard.dateStart.getDate()) {
+      tripDays.push(currentCards);
+      currentCards = [];
+    }
+    currentCards.push(card);
+    if (i === cards.length - 1) {
+      tripDays.push(currentCards);
+    }
+  });
+
+  return tripDays;
+};
+
+const getTripCost = (tripDays) => {
+  const tripDaysCards = tripDays.flat();
+  let tripCost = 0;
+  tripDaysCards.forEach((tripDaysCard) => {
+    tripCost += tripDaysCard.price;
+  });
+  return tripCost;
+};
+
+export {generateFormEdit, generateTripCards, generateTripDays, getTripCost};

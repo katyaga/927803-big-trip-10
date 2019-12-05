@@ -1,6 +1,7 @@
 import {MonthNames} from "../const";
 
-export const createRouteTemplate = (tripCards) => {
+export const createRouteTemplate = (tripDays) => {
+  let tripCards = tripDays.flat();
   const getRouteDays = () => {
     const dateStart = tripCards[0].dateStart;
     const dateEnd = tripCards[tripCards.length - 1].dateEnd;
@@ -15,7 +16,12 @@ export const createRouteTemplate = (tripCards) => {
     tripCards.forEach((tripCard) => {
       routeCityList.push(tripCard.city);
     });
-    return routeCityList.join(` - `);
+    let routeCityCount = routeCityList.length;
+    if (routeCityCount <= 3) {
+      return routeCityList.join(` - `);
+    } else {
+      return `${routeCityList[0]} - ... - ${routeCityList[routeCityCount - 1]}`;
+    }
   };
 
   return (
