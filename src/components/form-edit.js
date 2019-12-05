@@ -1,7 +1,7 @@
 import {eventTypes, cities} from "../const";
-import {formatDateTime} from "../utils";
+import {formatDateTime, createElement} from "../utils";
 
-export const createFormEditTemplate = (formEdit) => {
+const createFormEditTemplate = (formEdit) => {
   const {type, city, photos, text, options, price, dateStart, dateEnd} = formEdit;
 
   const createEventTypeItem = (types, group) => {
@@ -127,5 +127,28 @@ export const createFormEditTemplate = (formEdit) => {
     </form>`
   );
 };
+
+export default class FormEdit {
+  constructor(formEdit) {
+    this._formEdit = formEdit;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createFormEditTemplate(this._formEdit);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
 
 

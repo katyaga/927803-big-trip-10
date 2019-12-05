@@ -1,8 +1,8 @@
 import {createTripCardTemplate} from "../components/trip-card";
+import {createElement} from '../utils.js';
 import {MonthNames} from "../const";
 
-export const createTripDaysTemplate = (tripDays) => {
-
+const createTripDaysTemplate = (tripDays) => {
 
   return (
     `<ul class="trip-days">
@@ -29,4 +29,27 @@ export const createTripDaysTemplate = (tripDays) => {
     </ul>`
   );
 };
+
+export default class TripDays {
+  constructor(tripDays) {
+    this._tripDays = tripDays;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createTripDaysTemplate(this._tripDays);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
 

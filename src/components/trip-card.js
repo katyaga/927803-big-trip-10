@@ -1,4 +1,4 @@
-import {formatTime, castTimeFormat} from "../utils";
+import {formatTime, castTimeFormat, createElement} from "../utils";
 
 export const createTripCardTemplate = (tripCard) => {
 
@@ -67,5 +67,28 @@ export const createTripCardTemplate = (tripCard) => {
     </li>`
   );
 };
+
+export default class TripCard {
+  constructor(tripCard) {
+    this._tripCard = tripCard;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createTripCardTemplate(this._tripCard);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
 
 
