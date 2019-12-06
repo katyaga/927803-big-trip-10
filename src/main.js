@@ -14,27 +14,25 @@ import {render, RenderPosition} from "./utils";
 //   container.insertAdjacentHTML(place, template);
 // };
 
-const editForm = generateFormEdit();
+// const editForm = generateFormEdit();
 const filters = generateFilters();
 const siteMenu = generateSiteMenu();
-
 const tripDays = generateTripDays();
-
 
 const tripInfoElement = document.querySelector(`.trip-main__trip-info`);
 const tripCostElement = tripInfoElement.querySelector(`.trip-info__cost-value`);
 tripCostElement.innerHTML = getTripCost(tripDays);
-render(tripInfoElement, createRouteTemplate(tripDays), `afterbegin`);
+
+render(tripInfoElement, new RouteComponent(tripDays).getElement(), RenderPosition.AFTERBEGIN);
 
 const tripControlsElement = document.querySelector(`.trip-main__trip-controls`);
-render(tripControlsElement, createFilterTemplate(filters), `beforeend`);
-
 const menuTitleElement = tripControlsElement.querySelector(`h2`);
-render(menuTitleElement, createSiteMenuTemplate(siteMenu), `beforebegin`);
+render(menuTitleElement, new SiteMenuComponent(siteMenu).getElement(), RenderPosition.AFTEREND);
+render(tripControlsElement, new FilterComponent(filters).getElement(), RenderPosition.BEFOREEND);
 
 const tripEventsElement = document.querySelector(`.trip-events`);
-render(tripEventsElement, createSortTemplate(), `beforeend`);
-render(tripEventsElement, createFormEditTemplate(editForm), `beforeend`);
-render(tripEventsElement, createTripDaysTemplate(tripDays), `beforeend`);
+render(tripEventsElement, new SortComponent().getElement(), RenderPosition.BEFOREEND);
+render(tripEventsElement, new FormEditComponent(editForm).getElement(), RenderPosition.BEFOREEND);
+render(tripEventsElement, new TripDaysComponent(tripDays).getElement(), RenderPosition.BEFOREEND);
 
 
