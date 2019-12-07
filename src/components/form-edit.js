@@ -1,10 +1,13 @@
 import {eventTypes, cities} from "../const";
 import {formatDateTime, createElement} from "../utils";
 
-const createFormEditTemplate = (formEdit) => {
-  const {type, city, photos, text, options, price, dateStart, dateEnd} = formEdit;
+export default class FormEdit {
+  constructor(formEdit) {
+    this._formEdit = formEdit;
+    this._element = null;
+  }
 
-  const createEventTypeItem = (types, group) => {
+  _createEventTypeItem(types, group) {
     return types
       .filter((item) => item.group === group)
       .map((eventType) => {
@@ -16,15 +19,16 @@ const createFormEditTemplate = (formEdit) => {
         );
       })
       .join(`\n`);
-  };
+  }
 
-  const createDestinationList = () => {
+  _createDestinationList() {
     return cities.map((destinationCity) => {
       return `<option value="${destinationCity}"></option>`;
     }).join(`\n`);
-  };
+  }
 
-  const createOptionsList = () => {
+  _createOptionsList() {
+    const options = this._formEdit.options;
     return options.map((option) => {
       return (
         `<div class="event__offer-selector">
@@ -37,17 +41,21 @@ const createFormEditTemplate = (formEdit) => {
         </div>`
       );
     }).join(`\n`);
-  };
+  }
 
-  const createPhotoList = () => {
+  _createPhotoList() {
+    const photos = this._formEdit.photos;
     const destinationPhotos = Array.from(photos);
     return destinationPhotos.map((destinationPhoto) => {
       return `<img class="event__photo" src=${destinationPhoto} alt="Event photo">`;
     }).join(`\n`);
-  };
+  }
 
-  return (
-    `<li class="trip-events__item">
+  _createFormEditTemplate() {
+    const {type, city, text, price, dateStart, dateEnd} = this._formEdit;
+
+    return (
+      `<li class="trip-events__item">
       <form class="trip-events__item  event  event--edit" action="#" method="post">
         <header class="event__header">
           <div class="event__type-wrapper">
@@ -60,14 +68,14 @@ const createFormEditTemplate = (formEdit) => {
             <div class="event__type-list">
               <fieldset class="event__type-group">
                 <legend class="visually-hidden">Transfer</legend>
-                ${createEventTypeItem(eventTypes, `transfer`)}
+                ${this._createEventTypeItem(eventTypes, `transfer`)}
 
               </fieldset>
 
               <fieldset class="event__type-group">
                 <legend class="visually-hidden">Activity</legend>
 
-                ${createEventTypeItem(eventTypes, `activity`)}
+                ${this._createEventTypeItem(eventTypes, `activity`)}
               </fieldset>
             </div>
           </div>
@@ -78,7 +86,7 @@ const createFormEditTemplate = (formEdit) => {
             </label>
             <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${city}" list="destination-list-1">
             <datalist id="destination-list-1">
-              ${createDestinationList()}
+              ${this._createDestinationList()}
             </datalist>
           </div>
 
@@ -111,7 +119,7 @@ const createFormEditTemplate = (formEdit) => {
             <h3 class="event__section-title  event__section-title--offers">Offers</h3>
 
             <div class="event__available-offers">
-              ${createOptionsList()}
+              ${this._createOptionsList()}
           </section>
 
           <section class="event__section  event__section--destination">
@@ -120,24 +128,18 @@ const createFormEditTemplate = (formEdit) => {
 
             <div class="event__photos-container">
               <div class="event__photos-tape">
-              ${createPhotoList()}
+              ${this._createPhotoList()}
               </div>
             </div>
           </section>
         </section>
       </form>
     </li>`
-  );
-};
-
-export default class FormEdit {
-  constructor(formEdit) {
-    this._formEdit = formEdit;
-    this._element = null;
+    );
   }
 
   getTemplate() {
-    return createFormEditTemplate(this._formEdit);
+    return this._createFormEditTemplate();
   }
 
   getElement() {

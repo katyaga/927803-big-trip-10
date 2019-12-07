@@ -1,20 +1,26 @@
 import {MonthNames} from "../const";
 import {createElement} from '../utils.js';
 
-const createRouteTemplate = (tripDays) => {
-  let tripCards = tripDays.flat();
-  const getRouteDays = () => {
-    const dateStart = tripCards[0].dateStart;
-    const dateEnd = tripCards[tripCards.length - 1].dateEnd;
+export default class Route {
+  constructor(tripDays) {
+    this._tripDays = tripDays;
+    this._tripCards = this._tripDays.flat();
+    this._element = null;
+  }
+
+  _getRouteDays() {
+    const dateStart = this._tripCards[0].dateStart;
+    const dateEnd = this._tripCards[this._tripCards.length - 1].dateEnd;
     const monthStart = MonthNames[dateStart.getMonth()];
     const dayStart = dateStart.getDate();
     const monthEnd = MonthNames[dateEnd.getMonth()];
     const dayEnd = dateEnd.getDate();
     return `${monthStart} ${dayStart} - ${monthStart === monthEnd ? `` : monthEnd} ${dayEnd}`;
-  };
-  const getRouteCities = () => {
+  }
+
+  _getRouteCities() {
     let routeCityList = [];
-    tripCards.forEach((tripCard) => {
+    this._tripCards.forEach((tripCard) => {
       routeCityList.push(tripCard.city);
     });
     let routeCityCount = routeCityList.length;
@@ -23,25 +29,20 @@ const createRouteTemplate = (tripDays) => {
     } else {
       return `${routeCityList[0]} - ... - ${routeCityList[routeCityCount - 1]}`;
     }
-  };
+  }
 
-  return (
-    `<div class="trip-info__main">
-      <h1 class="trip-info__title">${getRouteCities()}</h1>
+  _createRouteTemplate() {
+    return (
+      `<div class="trip-info__main">
+      <h1 class="trip-info__title">${this._getRouteCities()}</h1>
 
-      <p class="trip-info__dates">${getRouteDays()}</p>
+      <p class="trip-info__dates">${this._getRouteDays()}</p>
     </div>`
-  );
-};
-
-export default class Route {
-  constructor(tripDays) {
-    this._tripDays = tripDays;
-    this._element = null;
+    );
   }
 
   getTemplate() {
-    return createRouteTemplate(this._tripDays);
+    return this._createRouteTemplate();
   }
 
   getElement() {

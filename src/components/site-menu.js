@@ -1,29 +1,29 @@
 import {createElement} from '../utils.js';
 
-const createSiteMenuItem = (menuItem, isActive) => {
-  const {name} = menuItem;
-
-  return `<a class="trip-tabs__btn ${isActive ? `trip-tabs__btn--active` : ``}"
-          href="#">${name}</a>`;
-};
-
-const createSiteMenuTemplate = (siteMenu) => {
-  const siteMenuItem = siteMenu.map((it, i) => createSiteMenuItem(it, i === 0)).join(`\n`);
-  return (
-    `<nav class="trip-controls__trip-tabs  trip-tabs">
-      ${siteMenuItem}
-     </nav>`
-  );
-};
-
 export default class SiteMenu {
   constructor(menu) {
     this._menu = menu;
     this._element = null;
   }
 
+  _createSiteMenuItem(isActive) {
+    const {name} = this._menu;
+
+    return `<a class="trip-tabs__btn ${isActive ? `trip-tabs__btn--active` : ``}"
+          href="#">${name}</a>`;
+  }
+
+  _createSiteMenuTemplate() {
+    const siteMenuItem = this._menu.map((it, i) => this._createSiteMenuItem(it, i === 0)).join(`\n`);
+    return (
+      `<nav class="trip-controls__trip-tabs  trip-tabs">
+      ${siteMenuItem}
+     </nav>`
+    );
+  }
+
   getTemplate() {
-    return createSiteMenuTemplate(this._menu);
+    return this._createSiteMenuTemplate();
   }
 
   getElement() {
