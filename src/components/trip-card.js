@@ -28,7 +28,7 @@ export const createTripCardTemplate = (tripCard) => {
       return `${castTimeFormat(hours)}H ${castTimeFormat(minutes)}M`;
     }
 
-    let days = (Math.floor(durationMinutes / 24 * 60));
+    let days = (Math.floor(durationMinutes / (24 * 60)));
     durationMinutes = durationMinutes - days * 24 * 60;
     let hours = Math.floor(durationMinutes / 60);
     let minutes = durationMinutes % 60;

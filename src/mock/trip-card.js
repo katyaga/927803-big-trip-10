@@ -71,7 +71,7 @@ const generatePhotos = () => {
   );
 };
 
-const generateFormEdit = () => {
+const generateTripCard = () => {
   const currentDate = Date.now();
   const date = generateRandomDate(currentDate, 2, 10);
 
@@ -83,7 +83,7 @@ const generateFormEdit = () => {
     options: generateOptionsList(),
     price: getPrice(5, 40),
     dateStart: date,
-    dateEnd: generateRandomDate(date, 0, 1),
+    dateEnd: generateRandomDate(date, 1, 1),
   };
 };
 
@@ -103,7 +103,7 @@ const generateOrderedDates = (card, index, cards) => {
 };
 
 const generateTripCards = (count) => {
-  let tripCards = new Array(count).fill(``).map(generateFormEdit);
+  let tripCards = new Array(count).fill(``).map(generateTripCard);
 
   return tripCards.map(generateOrderedDates);
 };
@@ -137,4 +137,4 @@ const getTripCost = (tripDays) => {
   return tripCost;
 };
 
-export {generateFormEdit, generateTripCards, generateTripDays, getTripCost};
+export {generateTripCard, generateTripCards, generateTripDays, getTripCost};

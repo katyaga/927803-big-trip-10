@@ -1,33 +1,27 @@
-import {createTripCardTemplate} from "../components/trip-card";
 import {createElement} from '../utils.js';
 import {MonthNames} from "../const";
 
 const createTripDaysTemplate = (tripDays) => {
 
-  return (
-    `<ul class="trip-days">
-      ${tripDays.map((day, i) => {
+  const generateTripCards = (index, day) => {
+    const getTripDaysDay = () => {
+      const dayDate = day[0].dateStart;
+      return `${MonthNames[dayDate.getMonth()]} ${dayDate.getDate()}`;
+    };
 
-      const getTripDaysDay = () => {
-        const dayDate = day[0].dateStart;
-        return `${MonthNames[dayDate.getMonth()]} ${dayDate.getDate()}`;
-      };
+    return (
+      `<li class="trip-days__item day">
+          <div class="day__info">
+            <span class="day__counter">${index + 1}</span>
+            <time class="day__date" datetime="">${getTripDaysDay()}</time>
+          </div>
+          <ul class="trip-events__list"></ul>
+        </li>`
+    );
+  };
+  const getTripCards = tripDays.map((day, i) => generateTripCards(i, day)).join(`\n`);
 
-      return (
-        `<li class="trip-days__item day">
-        <div class="day__info">
-          <span class="day__counter">${i + 1}</span>
-          <time class="day__date" datetime="">${getTripDaysDay()}</time>
-        </div>
-
-        <ul class="trip-events__list">
-        ${day.map((tripCard) => createTripCardTemplate(tripCard)).join(`\n`)}
-        </ul>
-      </li>`
-      );
-    }).join(`\n`)}
-    </ul>`
-  );
+  return `<ul class="trip-days">${getTripCards}</ul>`;
 };
 
 export default class TripDays {
@@ -52,4 +46,3 @@ export default class TripDays {
     this._element = null;
   }
 }
-
