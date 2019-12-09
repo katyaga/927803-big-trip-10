@@ -1,11 +1,16 @@
-import {formatTime, castTimeFormat} from "../utils";
+import {formatTime, castTimeFormat, createElement} from "../utils";
 
-export const createTripCardTemplate = (tripCard) => {
+export default class TripCard {
+  constructor(tripCard) {
+    this._tripCard = tripCard;
+    this._element = null;
+    this._options = tripCard.options;
+    this._dateStart = tripCard.dateStart;
+    this._dateEnd = tripCard.dateEnd;
+  }
 
-  const {type, city, price, options, dateStart, dateEnd} = tripCard;
-
-  const createOptionsList = () => {
-    let visibleOptions = (options.length > 3) ? options.slice(0, 3) : options;
+  _createOptionsList() {
+    let visibleOptions = (this._options.length > 3) ? this._options.slice(0, 3) : this._options;
     return visibleOptions.map((option) => {
       return (
         `<li class="event__offer">
@@ -15,10 +20,10 @@ export const createTripCardTemplate = (tripCard) => {
          </li>`
       );
     }).join(`\n`);
-  };
+  }
 
-  const getEventDuration = () => {
-    let durationMinutes = (dateEnd - dateStart) / 60000;
+  _getEventDuration() {
+    let durationMinutes = (this._dateEnd - this._dateStart) / 60000;
     if (durationMinutes < 60) {
       return `${castTimeFormat(durationMinutes)}M`;
     }
@@ -28,15 +33,18 @@ export const createTripCardTemplate = (tripCard) => {
       return `${castTimeFormat(hours)}H ${castTimeFormat(minutes)}M`;
     }
 
-    let days = (Math.floor(durationMinutes / 24 * 60));
+    let days = (Math.floor(durationMinutes / (24 * 60)));
     durationMinutes = durationMinutes - days * 24 * 60;
     let hours = Math.floor(durationMinutes / 60);
     let minutes = durationMinutes % 60;
     return `${castTimeFormat(days)}D ${castTimeFormat(hours)}H ${castTimeFormat(minutes)}M`;
-  };
+  }
 
-  return (
-    `<li class="trip-events__item">
+  _createTripCardTemplate() {
+    const {type, city, price} = this._tripCard;
+
+    return (
+      `<li class="trip-events__item">
       <div class="event">
         <div class="event__type">
           <img class="event__type-icon" width="42" height="42" src="img/icons/${type.name}.png" alt="Event type icon">
@@ -45,11 +53,11 @@ export const createTripCardTemplate = (tripCard) => {
 
         <div class="event__schedule">
           <p class="event__time">
-            <time class="event__start-time" datetime="${dateStart}">${formatTime(dateStart)}</time>
+            <time class="event__start-time" datetime="${this._dateStart}">${formatTime(this._dateStart)}</time>
             &mdash;
-            <time class="event__end-time" datetime="${dateEnd}">${formatTime(dateEnd)}</time>
+            <time class="event__end-time" datetime="${this._dateEnd}">${formatTime(this._dateEnd)}</time>
           </p>
-          <p class="event__duration">${getEventDuration()}</p>
+          <p class="event__duration">${this._getEventDuration()}</p>
         </div>
 
         <p class="event__price">
@@ -58,14 +66,31 @@ export const createTripCardTemplate = (tripCard) => {
 
         <h4 class="visually-hidden">Offers:</h4>
         <ul class="event__selected-offers">
-          ${createOptionsList()}
+          ${this._createOptionsList()}
         </ul>
         <button class="event__rollup-btn" type="button">
           <span class="visually-hidden">Open event</span>
         </button>
       </div>
     </li>`
-  );
-};
+    );
+  }
+
+  getTemplate() {
+    return this._createTripCardTemplate();
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
 
 
