@@ -6,8 +6,8 @@ export default class SiteMenu {
     this._element = null;
   }
 
-  _createSiteMenuItem(isActive) {
-    const {name} = this._menu;
+  _createSiteMenuItem(filter, isActive) {
+    const {name} = filter;
 
     return `<a class="trip-tabs__btn ${isActive ? `trip-tabs__btn--active` : ``}"
           href="#">${name}</a>`;
