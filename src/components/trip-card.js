@@ -1,9 +1,11 @@
-import {formatTime, castTimeFormat, createElement} from "../utils";
+import {formatTime, castTimeFormat} from "../utils/common";
+import AbstractComponent from "./abstarct-component";
 
-export default class TripCard {
+export default class TripCard extends AbstractComponent {
   constructor(tripCard) {
+    super();
+
     this._tripCard = tripCard;
-    this._element = null;
     this._options = tripCard.options;
     this._dateStart = tripCard.dateStart;
     this._dateEnd = tripCard.dateEnd;
@@ -80,16 +82,9 @@ export default class TripCard {
     return this._createTripCardTemplate();
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
+  setEditButtonClickHandler(handler) {
+    this.getElement().querySelector(`.event__rollup-btn`)
+      .addEventListener(`click`, handler);
   }
 }
 

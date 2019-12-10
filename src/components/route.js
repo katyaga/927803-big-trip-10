@@ -1,11 +1,12 @@
 import {MonthNames} from "../const";
-import {createElement} from '../utils.js';
+import AbstractComponent from "./abstarct-component";
 
-export default class Route {
+export default class Route extends AbstractComponent {
   constructor(tripDays) {
+    super();
+
     this._tripDays = tripDays;
     this._tripCards = this._tripDays.flat();
-    this._element = null;
   }
 
   _getRouteDays() {
@@ -43,18 +44,6 @@ export default class Route {
 
   getTemplate() {
     return this._createRouteTemplate();
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }
 

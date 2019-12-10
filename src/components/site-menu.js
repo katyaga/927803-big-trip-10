@@ -1,9 +1,10 @@
-import {createElement} from '../utils.js';
+import AbstractComponent from "./abstarct-component";
 
-export default class SiteMenu {
+export default class SiteMenu extends AbstractComponent {
   constructor(menu) {
+    super();
+
     this._menu = menu;
-    this._element = null;
   }
 
   _createSiteMenuItem(filter, isActive) {
@@ -24,18 +25,6 @@ export default class SiteMenu {
 
   getTemplate() {
     return this._createSiteMenuTemplate();
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }
 
