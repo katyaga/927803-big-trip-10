@@ -1,7 +1,7 @@
 import RouteComponent from "./components/route";
 import SiteMenuComponent from "./components/site-menu";
 import FilterComponent from "./components/filter";
-import BoardController from "./controllers/trip";
+import TripController from "./controllers/trip";
 import {generateTripDays, getTripCost} from "./mock/trip-card";
 import {generateSiteMenu} from "./mock/site-menu";
 import {generateFilters} from "./mock/filter";
@@ -24,7 +24,7 @@ const menuTitleElement = tripControlsElement.querySelector(`h2`);
 render(menuTitleElement, new SiteMenuComponent(siteMenu), RenderPosition.AFTEREND);
 
 const tripEventsElement = document.querySelector(`.trip-events`);
-const boardController = new BoardController(tripEventsElement);
+const boardController = new TripController(tripEventsElement);
 
 boardController.render(tripDays);
 

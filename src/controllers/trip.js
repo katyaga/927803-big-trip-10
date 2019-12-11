@@ -1,6 +1,6 @@
 import TripCardComponent from "../components/trip-card";
 import FormEditComponent from "../components/form-edit";
-import SortComponent from "../components/sort";
+import SortComponent, {SortType} from "../components/sort";
 import TripDaysComponent from "../components/trip-days";
 import NoPointsComponent from "../components/no-points";
 import {render, RenderPosition, replace} from "../utils/render";
@@ -36,7 +36,22 @@ const renderCard = (tripEventsListElement, card, i) => {
   render(tripEventsListElement[i], cardComponent, RenderPosition.BEFOREEND);
 };
 
-export default class BoardController {
+const renderTripCards = (taskListElement, tripDays) => {
+  // const tripDaysListElement = this._container.querySelector(`.trip-days`);
+  // const tripEventsListElement = tripDaysListElement.querySelectorAll(`.trip-events__list`);
+
+  tripDays.forEach(((tripDay, i) => tripDay.forEach((tripCard) => {
+    renderCard(taskListElement, tripCard, i);
+  })));
+};
+
+// const renderTasks = (taskListElement, tasks) => {
+//   tasks.forEach((task) => {
+//     renderTask(taskListElement, task);
+//   });
+// };
+
+export default class TripController {
   constructor(container) {
     this._container = container;
     this._sortComponent = new SortComponent();
@@ -55,10 +70,35 @@ export default class BoardController {
 
       const tripDaysListElement = this._container.querySelector(`.trip-days`);
       const tripEventsListElement = tripDaysListElement.querySelectorAll(`.trip-events__list`);
+      console.log(tripEventsListElement);
 
-      tripDays.forEach(((tripDay, i) => tripDay.forEach((tripCard) => {
-        renderCard(tripEventsListElement, tripCard, i);
-      })));
+      renderTripCards(tripEventsListElement, tripDays);
+
+      this._sortComponent.setSortTypeChangeHandler((sortType) => {
+        let sortedCards = [];
+
+        switch (sortType) {
+          case SortType.TIME:
+            sortedCards = tripDays.slice().sort((a, b) => a.dateStart - b.dateStart);
+            break;
+          case SortType.PRICE:
+            sortedCards = tripDays.slice().sort((a, b) => b.price - a.price);
+            break;
+          case SortType.DEFAULT:
+            sortedCards = tripDays.slice().sort((a, b) => a.dateStart - b.dateStart);
+            break;
+        }
+
+        tripEventsListElement.forEach((item) => {
+          item.innerHTML = ``;
+        });
+
+        // renderTripCards(tripEventsListElement, sortedCards);
+      });
+
+      // tripDays.forEach(((tripDay, i) => tripDay.forEach((tripCard) => {
+      //   renderCard(tripEventsListElement, tripCard, i);
+      // })));
     }
   }
 }
