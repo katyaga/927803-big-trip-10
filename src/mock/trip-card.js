@@ -1,5 +1,5 @@
 import {cities, eventTypes} from "../const";
-import {shuffleArray, getRandomRange, getRandomElement} from "../utils";
+import {shuffleArray, getRandomRange, getRandomElement} from "../utils/common";
 
 const descriptionText = `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras aliquet varius magna,
   non porta ligula feugiat eget. Fusce tristique felis at fermentum pharetra. Aliquam id orci ut lectus varius viverra.

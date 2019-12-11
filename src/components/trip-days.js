@@ -1,10 +1,11 @@
-import {createElement} from '../utils.js';
 import {MonthNames} from "../const";
+import AbstractComponent from "./abstarct-component";
 
-export default class TripDays {
+export default class TripDays extends AbstractComponent {
   constructor(tripDays) {
+    super();
+
     this._tripDays = tripDays;
-    this._element = null;
   }
 
   _getTripDaysDay(day) {
@@ -32,17 +33,5 @@ export default class TripDays {
 
   getTemplate() {
     return this._createTripDaysTemplate();
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

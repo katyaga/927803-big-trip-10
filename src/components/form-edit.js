@@ -1,10 +1,12 @@
 import {eventTypes, cities} from "../const";
-import {formatDateTime, createElement} from "../utils";
+import {formatDateTime} from "../utils/common";
+import AbstractComponent from "./abstarct-component";
 
-export default class FormEdit {
+export default class FormEdit extends AbstractComponent {
   constructor(formEdit) {
+    super();
+
     this._formEdit = formEdit;
-    this._element = null;
   }
 
   _createEventTypeItem(types, group) {
@@ -142,16 +144,9 @@ export default class FormEdit {
     return this._createFormEditTemplate();
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
+  setSubmitHandler(handler) {
+    this.getElement().querySelector(`form`)
+      .addEventListener(`submit`, handler);
   }
 }
 
