@@ -102,17 +102,17 @@ const generateOrderedDates = (card, index, cards) => {
   return card;
 };
 
-const generateTripCards = (count) => {
-  let tripCards = new Array(count).fill(``).map(generateTripCard);
+const generateTripCards = () => {
+  let tripCards = new Array(getRandomRange(3, 10)).fill(``).map(generateTripCard);
 
   return tripCards.map(generateOrderedDates);
 };
 
-const generateTripDays = () => {
+const generateTripDays = (tripCards) => {
   let tripDays = [];
   let currentCards = [];
 
-  generateTripCards(getRandomRange(3, 10)).forEach((card, i, cards) => {
+  tripCards.forEach((card, i, cards) => {
     let previousCard = i > 0 ? cards[i - 1] : null;
 
     if (previousCard && card.dateStart.getDate() !== previousCard.dateStart.getDate()) {
