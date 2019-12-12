@@ -9,6 +9,7 @@ export default class TripCard extends AbstractComponent {
     this._options = tripCard.options;
     this._dateStart = tripCard.dateStart;
     this._dateEnd = tripCard.dateEnd;
+    this._duration = tripCard.duration;
   }
 
   _createOptionsList() {
@@ -25,7 +26,7 @@ export default class TripCard extends AbstractComponent {
   }
 
   _getEventDuration() {
-    let durationMinutes = (this._dateEnd - this._dateStart) / 60000;
+    let durationMinutes = (this._duration) / 60000;
     if (durationMinutes < 60) {
       return `${castTimeFormat(durationMinutes)}M`;
     }

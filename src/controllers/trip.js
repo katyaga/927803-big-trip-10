@@ -5,11 +5,12 @@ import TripDaysComponent from "../components/trip-days";
 import NoPointsComponent from "../components/no-points";
 import {render, RenderPosition, replace} from "../utils/render";
 import {generateTripCards, generateTripDays} from "../mock/trip-card";
+import TripDayComponent from "../components/tripDay";
 
 export const tripCards = generateTripCards();
-const tripDays1 = generateTripDays(tripCards);
+export const tripDaysCards = generateTripDays(tripCards);
 
-const renderCard = (tripEventsListElement, card, i) => {
+const renderCard = (tripEventsList, card) => {
   const cardComponent = new TripCardComponent(card);
 
   const onEscKeyDown = (evt) => {
@@ -36,78 +37,73 @@ const renderCard = (tripEventsListElement, card, i) => {
   });
 
   editCardComponent.setSubmitHandler(replaceEditToCard);
-
-  render(tripEventsListElement[i], cardComponent, RenderPosition.BEFOREEND);
+  render(tripEventsList, cardComponent, RenderPosition.BEFOREEND);
 };
 
-const renderTripCards = (taskListElement, tripDays) => {
-  // const tripDaysListElement = this._container.querySelector(`.trip-days`);
-  // const tripEventsListElement = tripDaysListElement.querySelectorAll(`.trip-events__list`);
-  if (Array.from(taskListElement).length > 1) {
-    tripDays.forEach(((tripDay, i) => tripDay.forEach((tripCard) => {
-      renderCard(taskListElement, tripCard, i);
-    })));
-  } else {
-    tripCards.forEach((tripCard) => {
-      renderCard(taskListElement, tripCard, 0);
+const renderTripCardsInDay = (container, tripDaysArray) => {
+  tripDaysArray.forEach((tripDay, i) => {
+    let tripDayComponent = new TripDayComponent(tripDay, i);
+    render(container, tripDayComponent, RenderPosition.BEFOREEND);
+    const tripEventsListElement = document.querySelectorAll(`.trip-events__list`);
+
+    tripDay.forEach((tripCard) => {
+      renderCard(tripEventsListElement[i], tripCard);
     });
-  }
+  });
 };
 
-// const renderTasks = (taskListElement, tasks) => {
-//   tasks.forEach((task) => {
-//     renderTask(taskListElement, task);
-//   });
-// };
+const renderTripCards = (container, tripCardsArray) => {
+  tripCardsArray.forEach((tripCard) => {
+    let tripDayComponent = new TripDayComponent();
+    render(container, tripDayComponent, RenderPosition.BEFOREEND);
+    const tripEventsListElement = document.querySelector(`.trip-events__list`);
+    renderCard(tripEventsListElement, tripCard);
+  });
+};
 
 export default class TripController {
   constructor(container) {
     this._container = container;
     this._sortComponent = new SortComponent();
     this._noPointsComponent = new NoPointsComponent();
-    this._tripDaysComponent = new TripDaysComponent(tripDays1);
+    this._tripDaysComponent = new TripDaysComponent();
   }
 
   render(tripDays) {
     const isTripPoints = tripDays.flat().length > 0;
-    // const tripDaysComponent = new TripDaysComponent(tripDays);
 
     if (!isTripPoints) {
       render(this._container, this._noPointsComponent, RenderPosition.BEFOREEND);
     } else {
       render(this._container, this._sortComponent, RenderPosition.BEFOREEND);
       render(this._container, this._tripDaysComponent, RenderPosition.BEFOREEND);
-
-      const tripDaysListElement = this._container.querySelector(`.trip-days`);
-      const tripEventsListElement = tripDaysListElement.querySelectorAll(`.trip-events__list`);
-
-      renderTripCards(tripEventsListElement, tripDays1);
+      renderTripCardsInDay(this._tripDaysComponent.getElement(), tripDays);
 
       this._sortComponent.setSortTypeChangeHandler((sortType) => {
+
         let sortedCards = [];
 
         switch (sortType) {
           case SortType.TIME:
-            sortedCards = tripDays.slice().sort((a, b) => a.dateStart - b.dateStart);
+            sortedCards = tripCards.slice().sort((a, b) => b.duration - a.duration);
             break;
           case SortType.PRICE:
-            sortedCards = tripDays.slice().sort((a, b) => b.price - a.price);
+            sortedCards = tripCards.slice().sort((a, b) => b.price - a.price);
             break;
           case SortType.DEFAULT:
-            sortedCards = tripDays.slice().sort((a, b) => a.dateStart - b.dateStart);
+            // sortedCards = tripDays.slice().sort((a, b) => a.dateStart - b.dateStart);
             break;
         }
 
-        tripEventsListElement.forEach((item) => {
-          item.innerHTML = ``;
-        });
+        this._tripDaysComponent.getElement().innerHTML = ``;
 
-        renderTripCards(tripEventsListElement, sortedCards);
+        if (sortType === SortType.PRICE || sortType === SortType.TIME) {
+          renderTripCards(this._tripDaysComponent.getElement(), sortedCards);
+
+        } else {
+          renderTripCardsInDay(this._tripDaysComponent.getElement(), tripDays);
+        }
       });
-
-      // tripDays.forEach(((tripDay, i) => tripDay.forEach((tripCard) => {
-      //   renderCard(tripEventsListElement, tripCard, i);
-      // })));
     }
   }
 }

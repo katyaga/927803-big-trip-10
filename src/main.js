@@ -6,7 +6,7 @@ import {getTripCost} from "./mock/trip-card";
 import {generateSiteMenu} from "./mock/site-menu";
 import {generateFilters} from "./mock/filter";
 import {render, RenderPosition} from "./utils/render";
-import {tripCards} from "./controllers/trip";
+import {tripCards, tripDaysCards} from "./controllers/trip";
 
 const filters = generateFilters();
 const siteMenu = generateSiteMenu();
@@ -26,6 +26,6 @@ render(menuTitleElement, new SiteMenuComponent(siteMenu), RenderPosition.AFTEREN
 const tripEventsElement = document.querySelector(`.trip-events`);
 const boardController = new TripController(tripEventsElement);
 
-boardController.render(tripCards);
+boardController.render(tripDaysCards);
 
 
