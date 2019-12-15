@@ -93,26 +93,28 @@ const generateOrderedDates = (card, index, cards) => {
     let previousCard = cards[index - 1];
     let currentCard = cards[index];
     currentCard.dateStart = new Date(previousCard.dateEnd.valueOf());
-    currentCard.dateStart.setHours(currentCard.dateStart.getHours() + 7);
+    currentCard.dateStart.setHours(currentCard.dateStart.getHours() + getRandomRange(3, 7));
 
     currentCard.dateEnd = new Date(currentCard.dateStart.valueOf());
-    currentCard.dateEnd.setHours(currentCard.dateEnd.getHours() + 10);
+    currentCard.dateEnd.setHours(currentCard.dateEnd.getHours() + getRandomRange(6, 10));
   }
+
+  card.duration = card.dateEnd - card.dateStart;
 
   return card;
 };
 
-const generateTripCards = (count) => {
-  let tripCards = new Array(count).fill(``).map(generateTripCard);
+const generateTripCards = () => {
+  let tripCards = new Array(getRandomRange(3, 10)).fill(``).map(generateTripCard);
 
   return tripCards.map(generateOrderedDates);
 };
 
-const generateTripDays = () => {
+const generateTripDays = (tripCards) => {
   let tripDays = [];
   let currentCards = [];
 
-  generateTripCards(getRandomRange(3, 10)).forEach((card, i, cards) => {
+  tripCards.forEach((card, i, cards) => {
     let previousCard = i > 0 ? cards[i - 1] : null;
 
     if (previousCard && card.dateStart.getDate() !== previousCard.dateStart.getDate()) {
