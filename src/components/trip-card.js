@@ -52,7 +52,7 @@ export default class TripCard extends AbstractComponent {
         <div class="event__type">
           <img class="event__type-icon" width="42" height="42" src="img/icons/${type.name}.png" alt="Event type icon">
         </div>
-        <h3 class="event__title">${type.title} ${city}</h3>
+        <h3 class="event__title">${type.title} ${type.group === `transfer` ? `to` : `in`} ${city}</h3>
 
         <div class="event__schedule">
           <p class="event__time">

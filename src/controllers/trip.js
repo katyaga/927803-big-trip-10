@@ -22,14 +22,15 @@ export default class TripController {
   }
 
   render(tripDays) {
-    const isTripPoints = tripDays.flat().length > 0;
+    this._tripDays = tripDays;
+    const isTripPoints = this._tripDays.flat().length > 0;
 
     if (!isTripPoints) {
       render(this._container, this._noPointsComponent, RenderPosition.BEFOREEND);
     } else {
       render(this._container, this._sortComponent, RenderPosition.BEFOREEND);
       render(this._container, this._tripDaysComponent, RenderPosition.BEFOREEND);
-      this.renderEventsWithDays(tripDays);
+      this.renderEventsWithDays(this._tripDays, this._onDataChange);
 
       this._sortComponent.setSortTypeChangeHandler((sortType) => {
         this._tripDaysComponent.clearElement();
@@ -38,14 +39,14 @@ export default class TripController {
         switch (sortType) {
           case SortType.TIME:
             sortedCards = tripCards.slice().sort((a, b) => b.duration - a.duration);
-            this.renderEventsWithoutDays(sortedCards);
+            this.renderEventsWithoutDays(sortedCards, this._onDataChange);
             break;
           case SortType.PRICE:
             sortedCards = tripCards.slice().sort((a, b) => b.price - a.price);
-            this.renderEventsWithoutDays(sortedCards);
+            this.renderEventsWithoutDays(sortedCards, this._onDataChange);
             break;
           case SortType.DEFAULT:
-            this.renderEventsWithDays(tripDays);
+            this.renderEventsWithDays(this._tripDays, this._onDataChange);
             break;
         }
       });
@@ -53,15 +54,15 @@ export default class TripController {
   }
 
   _onDataChange(taskController, oldData, newData) {
-    const index = this._tasks.findIndex((it) => it === oldData);
+    const index = this._tripDays.flat().findIndex((it) => it === oldData);
 
     if (index === -1) {
       return;
     }
 
-    this._tasks = [].concat(this._tasks.slice(0, index), newData, this._tasks.slice(index + 1));
+    this._tripDaysCards = [].concat(this._tripDays.flat().slice(0, index), newData, this._tripDays.flat().slice(index + 1));
 
-    taskController.render(this._tasks[index]);
+    taskController.render(this._tripDaysCards[index]);
   }
 
   renderEventsWithDays(tripDaysArray, onDataChange) {

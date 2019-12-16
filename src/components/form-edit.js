@@ -7,6 +7,9 @@ export default class FormEdit extends AbstractSmartComponent {
     super();
 
     this._formEdit = formEdit;
+    this._eventType = this._formEdit.type;
+    this._options = this._formEdit.options;
+    this._text = this._formEdit.text;
   }
 
   _createEventTypeItem(types, group) {
@@ -30,7 +33,7 @@ export default class FormEdit extends AbstractSmartComponent {
   }
 
   _createOptionsList() {
-    const options = this._formEdit.options;
+    const options = this._options;
     return options.map((option) => {
       return (
         `<div class="event__offer-selector">
@@ -54,7 +57,7 @@ export default class FormEdit extends AbstractSmartComponent {
   }
 
   _createFormEditTemplate() {
-    const {type, city, text, price, dateStart, dateEnd} = this._formEdit;
+    const {city, price, dateStart, dateEnd} = this._formEdit;
 
     return (
       `<li class="trip-events__item">
@@ -63,7 +66,7 @@ export default class FormEdit extends AbstractSmartComponent {
           <div class="event__type-wrapper">
             <label class="event__type  event__type-btn" for="event-type-toggle-1">
               <span class="visually-hidden">Choose event type</span>
-              <img class="event__type-icon" width="17" height="17" src="img/icons/${type.name}.png" alt="Event type icon">
+              <img class="event__type-icon" width="17" height="17" src="img/icons/${this._eventType.name}.png" alt="Event type icon">
             </label>
             <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
 
@@ -71,12 +74,10 @@ export default class FormEdit extends AbstractSmartComponent {
               <fieldset class="event__type-group">
                 <legend class="visually-hidden">Transfer</legend>
                 ${this._createEventTypeItem(eventTypes, `transfer`)}
-
               </fieldset>
 
               <fieldset class="event__type-group">
                 <legend class="visually-hidden">Activity</legend>
-
                 ${this._createEventTypeItem(eventTypes, `activity`)}
               </fieldset>
             </div>
@@ -84,7 +85,7 @@ export default class FormEdit extends AbstractSmartComponent {
 
           <div class="event__field-group  event__field-group--destination">
             <label class="event__label  event__type-output" for="event-destination-1">
-              ${type.title} at
+              ${this._eventType.title} ${this._eventType.group === `transfer` ? `to` : `in`}
             </label>
             <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${city}" list="destination-list-1">
             <datalist id="destination-list-1">
@@ -128,12 +129,12 @@ export default class FormEdit extends AbstractSmartComponent {
             <h3 class="event__section-title  event__section-title--offers">Offers</h3>
 
             <div class="event__available-offers">
-              ${type.group === `transfer` ? this._createOptionsList() : ``}
+              ${this._eventType.group === `transfer` ? this._createOptionsList() : ``}
           </section>
 
           <section class="event__section  event__section--destination">
             <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-            <p class="event__destination-description">${text}</p>
+            <p class="event__destination-description">${this._text}</p>
 
             <div class="event__photos-container">
               <div class="event__photos-tape">
@@ -162,7 +163,7 @@ export default class FormEdit extends AbstractSmartComponent {
   }
 
   recoveryListeners() {
-    // this._subscribeOnEvents();
+    this._subscribeOnEvents();
   }
 
   rerender() {
@@ -179,6 +180,21 @@ export default class FormEdit extends AbstractSmartComponent {
     // this._activeRepeatingDays = Object.assign({}, formEdit.repeatingDays);
 
     this.rerender();
+  }
+
+  _subscribeOnEvents() {
+    const element = this.getElement();
+    const eventTypeElements = element.querySelectorAll(`.event__type-input`);
+
+    if (eventTypeElements) {
+      eventTypeElements.forEach((eventTypeElement) => {
+        eventTypeElement.addEventListener(`change`, (evt) => {
+          this._eventType = eventTypes.find((eventType) => eventType.name === evt.target.value);
+
+          this.rerender();
+        });
+      });
+    }
   }
 }
 
