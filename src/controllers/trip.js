@@ -1,44 +1,15 @@
-import TripCardComponent from "../components/trip-card";
-import FormEditComponent from "../components/form-edit";
+// import TripCardComponent from "../components/trip-card";
+// import FormEditComponent from "../components/form-edit";
 import SortComponent, {SortType} from "../components/sort";
 import TripDaysComponent from "../components/trip-days";
 import NoPointsComponent from "../components/no-points";
-import {render, RenderPosition, replace} from "../utils/render";
+import {render, RenderPosition} from "../utils/render";
 import {generateTripCards, generateTripDays} from "../mock/trip-card";
 import TripDayComponent from "../components/tripDay";
+import PointController from "./point";
 
 export const tripCards = generateTripCards();
 export const tripDaysCards = generateTripDays(tripCards);
-
-const renderCard = (tripEventsList, card) => {
-  const cardComponent = new TripCardComponent(card);
-
-  const onEscKeyDown = (evt) => {
-    const isEscKey = evt.key === `Escape` || evt.key === `Esc`;
-
-    if (isEscKey) {
-      replaceEditToCard();
-      document.removeEventListener(`keydown`, onEscKeyDown);
-    }
-  };
-  const replaceEditToCard = () => {
-    replace(cardComponent, editCardComponent);
-  };
-
-  const replaceCardToEdit = () => {
-    replace(editCardComponent, cardComponent);
-  };
-
-  const editCardComponent = new FormEditComponent(card);
-
-  cardComponent.setEditButtonClickHandler(() => {
-    replaceCardToEdit();
-    document.addEventListener(`keydown`, onEscKeyDown);
-  });
-
-  editCardComponent.setSubmitHandler(replaceEditToCard);
-  render(tripEventsList, cardComponent, RenderPosition.BEFOREEND);
-};
 
 export default class TripController {
   constructor(container) {
@@ -46,6 +17,8 @@ export default class TripController {
     this._sortComponent = new SortComponent();
     this._noPointsComponent = new NoPointsComponent();
     this._tripDaysComponent = new TripDaysComponent();
+
+    this._onDataChange = this._onDataChange.bind(this);
   }
 
   render(tripDays) {
@@ -79,24 +52,39 @@ export default class TripController {
     }
   }
 
-  renderEventsWithDays(tripDaysArray) {
+  _onDataChange(taskController, oldData, newData) {
+    const index = this._tasks.findIndex((it) => it === oldData);
+
+    if (index === -1) {
+      return;
+    }
+
+    this._tasks = [].concat(this._tasks.slice(0, index), newData, this._tasks.slice(index + 1));
+
+    taskController.render(this._tasks[index]);
+  }
+
+  renderEventsWithDays(tripDaysArray, onDataChange) {
     tripDaysArray.forEach((tripDay, i) => {
       let tripDayComponent = new TripDayComponent(tripDay, i);
       render(this._tripDaysComponent.getElement(), tripDayComponent, RenderPosition.BEFOREEND);
       const tripEventsListElement = document.querySelectorAll(`.trip-events__list`);
 
       tripDay.forEach((tripCard) => {
-        renderCard(tripEventsListElement[i], tripCard);
+        const pointController = new PointController(tripEventsListElement[i], onDataChange);
+        pointController.render(tripCard);
       });
     });
   }
 
-  renderEventsWithoutDays(tripCardsArray) {
+  renderEventsWithoutDays(tripCardsArray, onDataChange) {
     tripCardsArray.forEach((tripCard) => {
       let tripDayComponent = new TripDayComponent();
       render(this._tripDaysComponent.getElement(), tripDayComponent, RenderPosition.BEFOREEND);
       const tripEventsListElement = document.querySelector(`.trip-events__list`);
-      renderCard(tripEventsListElement, tripCard);
+
+      const pointController = new PointController(tripEventsListElement, onDataChange);
+      pointController.render(tripCard);
     });
   }
 }

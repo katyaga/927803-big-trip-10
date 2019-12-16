@@ -84,6 +84,7 @@ const generateTripCard = () => {
     price: getPrice(5, 40),
     dateStart: date,
     dateEnd: generateRandomDate(date, 1, 1),
+    isFavorite: false,
   };
 };
 
