@@ -33,7 +33,6 @@ export default class TripController {
       render(this._container, this._tripDaysComponent, RenderPosition.BEFOREEND);
       const showedCards = this.renderEventsWithDays(this._tripDays, this._onDataChange, this._onViewChange);
       this._tripCards = this._tripCards.concat(showedCards);
-      // console.log(showedCards);
 
       this._sortComponent.setSortTypeChangeHandler((sortType) => {
         this._tripDaysComponent.clearElement();
@@ -78,7 +77,7 @@ export default class TripController {
   }
 
   renderEventsWithDays(tripDaysArray, onDataChange, onViewChange) {
-    const a = [];
+    const eventPoints = [];
     tripDaysArray.forEach((tripDay, i) => {
       let tripDayComponent = new TripDayComponent(tripDay, i);
       render(this._tripDaysComponent.getElement(), tripDayComponent, RenderPosition.BEFOREEND);
@@ -87,10 +86,10 @@ export default class TripController {
       tripDay.forEach((tripCard) => {
         const pointController = new PointController(tripEventsListElement[i], onDataChange, onViewChange);
         pointController.render(tripCard);
-        a.push(pointController);
+        eventPoints.push(pointController);
       });
     });
-    return a;
+    return eventPoints;
   }
 
   renderEventsWithoutDays(tripCardsArray, onDataChange, onViewChange) {

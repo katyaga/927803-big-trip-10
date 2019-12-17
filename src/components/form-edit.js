@@ -164,8 +164,7 @@ export default class FormEdit extends AbstractSmartComponent {
       this._submitHandler = handler;
     }
 
-    this.getElement().querySelector(`form`)
-      .addEventListener(`submit`, handler);
+    this.getElement().querySelector(`form`).addEventListener(`submit`, this._submitHandler);
   }
 
   setFavoritesButtonClickHandler(handler) {
@@ -177,12 +176,12 @@ export default class FormEdit extends AbstractSmartComponent {
     if (!this._resetHandler) {
       this._resetHandler = handler;
     }
-    this.getElement().querySelector(`.event__reset-btn`).addEventListener(`click`, handler);
+    this.getElement().querySelector(`.event__reset-btn`).addEventListener(`click`, this._resetHandler);
   }
 
   recoveryListeners() {
-    this.getElement().querySelector(`form`).addEventListener(`submit`, this._submitHandler);
-    this.getElement().querySelector(`.event__reset-btn`).addEventListener(`click`, this._resetHandler);
+    this.setSubmitHandler(this._submitHandler);
+    this.setCloseButtonClickHandler(this._resetHandler);
     this._subscribeOnEvents();
   }
 
@@ -210,17 +209,12 @@ export default class FormEdit extends AbstractSmartComponent {
 
     });
 
-    const eventTypeElements = element.querySelectorAll(`.event__type-input`);
-    if (eventTypeElements) {
-      eventTypeElements.forEach((eventTypeElement) => {
-        eventTypeElement.addEventListener(`change`, (evt) => {
-          this._eventType = eventTypes.find((eventType) => eventType.name === evt.target.value);
-          this._options = generateOptionsList();
+    element.querySelector(`.event__type-list`).addEventListener(`change`, (evt) => {
+      this._eventType = eventTypes.find((eventType) => eventType.name === evt.target.value);
+      this._options = generateOptionsList();
 
-          this.rerender();
-        });
-      });
-    }
+      this.rerender();
+    });
 
     element.querySelector(`.event__input--destination`).addEventListener(`change`, (evt) => {
       if (cities.includes(evt.target.value)) {
