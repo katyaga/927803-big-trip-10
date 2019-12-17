@@ -9,9 +9,10 @@ const Mode = {
 };
 
 export default class PointController {
-  constructor(container, onDataChange) {
+  constructor(container, onDataChange, onViewChange) {
     this._container = container;
     this._onDataChange = onDataChange;
+    this._onViewChange = onViewChange;
 
     this._mode = Mode.DEFAULT;
 
@@ -39,7 +40,7 @@ export default class PointController {
       }));
     });
 
-    this._editCardComponent.setSubmitHandler(this._replaceEditToCard);
+    this._editCardComponent.setSubmitHandler(() => this._replaceEditToCard());
 
     if (oldTaskEditComponent && oldTaskComponent) {
       replace(this._cardComponent, oldTaskComponent);
@@ -63,7 +64,7 @@ export default class PointController {
   }
 
   _replaceCardToEdit() {
-    // this._onViewChange();
+    this._onViewChange();
 
     replace(this._editCardComponent, this._cardComponent);
     this._mode = Mode.EDIT;

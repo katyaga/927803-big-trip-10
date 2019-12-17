@@ -1,5 +1,6 @@
 import {eventTypes, cities} from "../const";
 import {formatDateTime} from "../utils/common";
+import {generateOptionsList, generateDescriptionText} from "../mock/trip-card";
 import AbstractSmartComponent from "./abstract-smart-component";
 
 export default class FormEdit extends AbstractSmartComponent {
@@ -10,6 +11,9 @@ export default class FormEdit extends AbstractSmartComponent {
     this._eventType = this._formEdit.type;
     this._options = this._formEdit.options;
     this._text = this._formEdit.text;
+    this._city = this._formEdit.city;
+
+    this._subscribeOnEvents();
   }
 
   _createEventTypeItem(types, group) {
@@ -37,7 +41,7 @@ export default class FormEdit extends AbstractSmartComponent {
     return options.map((option) => {
       return (
         `<div class="event__offer-selector">
-          <input class="event__offer-checkbox  visually-hidden" id="event-offer-${option.type}-1" type="checkbox" name="event-offer-${option.type}" checked="">
+          <input class="event__offer-checkbox  visually-hidden" id="event-offer-${option.type}-1" type="checkbox" name="event-offer-${option.type}">
           <label class="event__offer-label" for="event-offer-${option.type}-1">
             <span class="event__offer-title">${option.name}</span>
             +
@@ -57,7 +61,7 @@ export default class FormEdit extends AbstractSmartComponent {
   }
 
   _createFormEditTemplate() {
-    const {city, price, dateStart, dateEnd} = this._formEdit;
+    const {price, dateStart, dateEnd} = this._formEdit;
 
     return (
       `<li class="trip-events__item">
@@ -87,7 +91,7 @@ export default class FormEdit extends AbstractSmartComponent {
             <label class="event__label  event__type-output" for="event-destination-1">
               ${this._eventType.title} ${this._eventType.group === `transfer` ? `to` : `in`}
             </label>
-            <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${city}" list="destination-list-1">
+            <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${this._city}" list="destination-list-1">
             <datalist id="destination-list-1">
               ${this._createDestinationList()}
             </datalist>
@@ -173,28 +177,38 @@ export default class FormEdit extends AbstractSmartComponent {
   }
 
   reset() {
-    // const formEdit = this._formEdit;
+    const formEdit = this._formEdit;
 
-    // this._isDateShowing = !!formEdit.dueDate;
-    // this._isRepeatingTask = Object.values(formEdit.repeatingDays).some(Boolean);
-    // this._activeRepeatingDays = Object.assign({}, formEdit.repeatingDays);
+    this._eventType = formEdit.type;
+    this._options = formEdit.options;
+    this._text = formEdit.text;
 
     this.rerender();
   }
 
   _subscribeOnEvents() {
     const element = this.getElement();
-    const eventTypeElements = element.querySelectorAll(`.event__type-input`);
 
+    const eventTypeElements = element.querySelectorAll(`.event__type-input`);
     if (eventTypeElements) {
       eventTypeElements.forEach((eventTypeElement) => {
         eventTypeElement.addEventListener(`change`, (evt) => {
           this._eventType = eventTypes.find((eventType) => eventType.name === evt.target.value);
+          this._options = generateOptionsList();
 
           this.rerender();
         });
       });
     }
+
+    element.querySelector(`.event__input--destination`).addEventListener(`change`, (evt) => {
+      if (cities.includes(evt.target.value)) {
+        this._city = evt.target.value;
+        this._text = generateDescriptionText();
+      }
+
+      this.rerender();
+    });
   }
 }
 
