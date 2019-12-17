@@ -1,7 +1,6 @@
 import TripCardComponent from "../components/trip-card";
 import FormEditComponent from "../components/form-edit";
 import {render, RenderPosition, replace} from "../utils/render";
-// import {tripCards, tripDaysCards} from "./controllers/trip";
 
 const Mode = {
   DEFAULT: `default`,
@@ -18,6 +17,9 @@ export default class PointController {
 
     this._cardComponent = null;
     this._editCardComponent = null;
+
+    this._replaceEditToCard = this._replaceEditToCard.bind(this);
+    this._replaceCardToEdit = this._replaceCardToEdit.bind(this);
 
     this._onEscKeyDown = this._onEscKeyDown.bind(this);
   }
@@ -40,7 +42,14 @@ export default class PointController {
       }));
     });
 
-    this._editCardComponent.setSubmitHandler(() => this._replaceEditToCard());
+    this._editCardComponent.setSubmitHandler((evt) => {
+      evt.preventDefault();
+      this._replaceEditToCard();
+    });
+
+    this._editCardComponent.setCloseButtonClickHandler(() => {
+      this._replaceEditToCard();
+    });
 
     if (oldTaskEditComponent && oldTaskComponent) {
       replace(this._cardComponent, oldTaskComponent);

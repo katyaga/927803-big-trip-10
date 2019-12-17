@@ -1,5 +1,3 @@
-// import TripCardComponent from "../components/trip-card";
-// import FormEditComponent from "../components/form-edit";
 import SortComponent, {SortType} from "../components/sort";
 import TripDaysComponent from "../components/trip-days";
 import NoPointsComponent from "../components/no-points";
@@ -33,30 +31,30 @@ export default class TripController {
     } else {
       render(this._container, this._sortComponent, RenderPosition.BEFOREEND);
       render(this._container, this._tripDaysComponent, RenderPosition.BEFOREEND);
-      const showedCards = this.renderEventsWithDays(this._tripDays, this._onDataChange);
-      // this._tripCards = this._tripCards.concat(showedCards);
-      console.log(showedCards);
+      const showedCards = this.renderEventsWithDays(this._tripDays, this._onDataChange, this._onViewChange);
+      this._tripCards = this._tripCards.concat(showedCards);
+      // console.log(showedCards);
 
       this._sortComponent.setSortTypeChangeHandler((sortType) => {
         this._tripDaysComponent.clearElement();
         let sortedCards = [];
-        let showedCards;
+        let renderedCard;
 
         switch (sortType) {
 
           case SortType.TIME:
             sortedCards = tripCards.slice().sort((a, b) => b.duration - a.duration);
-            showedCards = this.renderEventsWithoutDays(sortedCards, this._onDataChange, this._onViewChange);
-            this._tripCards = this._tripCards.concat(showedCards);
+            renderedCard = this.renderEventsWithoutDays(sortedCards, this._onDataChange, this._onViewChange);
+            this._tripCards = this._tripCards.concat(renderedCard);
             break;
           case SortType.PRICE:
             sortedCards = tripCards.slice().sort((a, b) => b.price - a.price);
-            showedCards = this.renderEventsWithoutDays(sortedCards, this._onDataChange, this._onViewChange);
-            this._tripCards = this._tripCards.concat(showedCards);
+            renderedCard = this.renderEventsWithoutDays(sortedCards, this._onDataChange, this._onViewChange);
+            this._tripCards = this._tripCards.concat(renderedCard);
             break;
           case SortType.DEFAULT:
-            showedCards = this.renderEventsWithDays(this._tripDays, this._onDataChange, this._onViewChange);
-            this._tripCards = this._tripCards.concat(showedCards);
+            renderedCard = this.renderEventsWithDays(this._tripDays, this._onDataChange, this._onViewChange);
+            this._tripCards = this._tripCards.concat(renderedCard);
             break;
         }
       });
@@ -76,12 +74,11 @@ export default class TripController {
   }
 
   _onViewChange() {
-    console.log(this._tripCards);
-
     this._tripCards.forEach((it) => it.setDefaultView());
   }
 
   renderEventsWithDays(tripDaysArray, onDataChange, onViewChange) {
+    const a = [];
     tripDaysArray.forEach((tripDay, i) => {
       let tripDayComponent = new TripDayComponent(tripDay, i);
       render(this._tripDaysComponent.getElement(), tripDayComponent, RenderPosition.BEFOREEND);
@@ -90,13 +87,14 @@ export default class TripController {
       tripDay.forEach((tripCard) => {
         const pointController = new PointController(tripEventsListElement[i], onDataChange, onViewChange);
         pointController.render(tripCard);
-
-        return pointController;
+        a.push(pointController);
       });
     });
+    return a;
   }
 
   renderEventsWithoutDays(tripCardsArray, onDataChange, onViewChange) {
+    const a = [];
     tripCardsArray.forEach((tripCard) => {
       let tripDayComponent = new TripDayComponent();
       render(this._tripDaysComponent.getElement(), tripDayComponent, RenderPosition.BEFOREEND);
@@ -104,9 +102,9 @@ export default class TripController {
 
       const pointController = new PointController(tripEventsListElement, onDataChange, onViewChange);
       pointController.render(tripCard);
-
-      return pointController;
+      a.push(pointController);
     });
+    return a;
   }
 }
 

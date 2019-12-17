@@ -13,6 +13,9 @@ export default class FormEdit extends AbstractSmartComponent {
     this._text = this._formEdit.text;
     this._city = this._formEdit.city;
 
+    this._submitHandler = null;
+    this._resetHandler = null;
+
     this._subscribeOnEvents();
   }
 
@@ -157,6 +160,10 @@ export default class FormEdit extends AbstractSmartComponent {
   }
 
   setSubmitHandler(handler) {
+    if (!this._submitHandler) {
+      this._submitHandler = handler;
+    }
+
     this.getElement().querySelector(`form`)
       .addEventListener(`submit`, handler);
   }
@@ -166,7 +173,16 @@ export default class FormEdit extends AbstractSmartComponent {
       .addEventListener(`change`, handler);
   }
 
+  setCloseButtonClickHandler(handler) {
+    if (!this._resetHandler) {
+      this._resetHandler = handler;
+    }
+    this.getElement().querySelector(`.event__reset-btn`).addEventListener(`click`, handler);
+  }
+
   recoveryListeners() {
+    this.getElement().querySelector(`form`).addEventListener(`submit`, this._submitHandler);
+    this.getElement().querySelector(`.event__reset-btn`).addEventListener(`click`, this._resetHandler);
     this._subscribeOnEvents();
   }
 
@@ -188,6 +204,11 @@ export default class FormEdit extends AbstractSmartComponent {
 
   _subscribeOnEvents() {
     const element = this.getElement();
+
+    element.querySelector(`.event__favorite-checkbox`).addEventListener(`change`, () => {
+      this._formEdit = Object.assign({}, this._formEdit, {isFavorite: !this._formEdit.isFavorite});
+
+    });
 
     const eventTypeElements = element.querySelectorAll(`.event__type-input`);
     if (eventTypeElements) {
