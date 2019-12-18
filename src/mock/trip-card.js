@@ -8,8 +8,8 @@ const descriptionText = `Lorem ipsum dolor sit amet, consectetur adipiscing elit
    Sed sed nisi sed augue convallis suscipit in sed felis. Aliquam erat volutpat. Nunc fermentum tortor ac porta dapibus.
    In rutrum ac purus sit amet tempus.`;
 
-const generateDescriptionText = (text) => {
-  let textSentences = new Array(...new Set(text.split(`.`)))
+export const generateDescriptionText = () => {
+  let textSentences = new Array(...new Set(descriptionText.split(`.`)))
     .map((sentence) => sentence.trim())
     .filter((sentence) => sentence);
 
@@ -61,7 +61,7 @@ const options = [
   },
 ];
 
-const generateOptionsList = () => {
+export const generateOptionsList = () => {
   return shuffleArray(options).slice(0, getRandomRange(0, options.length));
 };
 
@@ -79,11 +79,12 @@ const generateTripCard = () => {
     type: getRandomElement(eventTypes),
     city: getRandomElement(cities),
     photos: new Set(generatePhotos()),
-    text: generateDescriptionText(descriptionText),
+    text: generateDescriptionText(),
     options: generateOptionsList(),
     price: getPrice(5, 40),
     dateStart: date,
     dateEnd: generateRandomDate(date, 1, 1),
+    isFavorite: false,
   };
 };
 

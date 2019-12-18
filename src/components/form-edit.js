@@ -1,12 +1,22 @@
 import {eventTypes, cities} from "../const";
 import {formatDateTime} from "../utils/common";
-import AbstractComponent from "./abstarct-component";
+import {generateOptionsList, generateDescriptionText} from "../mock/trip-card";
+import AbstractSmartComponent from "./abstract-smart-component";
 
-export default class FormEdit extends AbstractComponent {
+export default class FormEdit extends AbstractSmartComponent {
   constructor(formEdit) {
     super();
 
     this._formEdit = formEdit;
+    this._eventType = this._formEdit.type;
+    this._options = this._formEdit.options;
+    this._text = this._formEdit.text;
+    this._city = this._formEdit.city;
+
+    this._submitHandler = null;
+    this._resetHandler = null;
+
+    this._subscribeOnEvents();
   }
 
   _createEventTypeItem(types, group) {
@@ -30,11 +40,11 @@ export default class FormEdit extends AbstractComponent {
   }
 
   _createOptionsList() {
-    const options = this._formEdit.options;
+    const options = this._options;
     return options.map((option) => {
       return (
         `<div class="event__offer-selector">
-          <input class="event__offer-checkbox  visually-hidden" id="event-offer-${option.type}-1" type="checkbox" name="event-offer-${option.type}" checked="">
+          <input class="event__offer-checkbox  visually-hidden" id="event-offer-${option.type}-1" type="checkbox" name="event-offer-${option.type}">
           <label class="event__offer-label" for="event-offer-${option.type}-1">
             <span class="event__offer-title">${option.name}</span>
             +
@@ -54,7 +64,7 @@ export default class FormEdit extends AbstractComponent {
   }
 
   _createFormEditTemplate() {
-    const {type, city, text, price, dateStart, dateEnd} = this._formEdit;
+    const {price, dateStart, dateEnd} = this._formEdit;
 
     return (
       `<li class="trip-events__item">
@@ -63,7 +73,7 @@ export default class FormEdit extends AbstractComponent {
           <div class="event__type-wrapper">
             <label class="event__type  event__type-btn" for="event-type-toggle-1">
               <span class="visually-hidden">Choose event type</span>
-              <img class="event__type-icon" width="17" height="17" src="img/icons/${type.name}.png" alt="Event type icon">
+              <img class="event__type-icon" width="17" height="17" src="img/icons/${this._eventType.name}.png" alt="Event type icon">
             </label>
             <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
 
@@ -71,12 +81,10 @@ export default class FormEdit extends AbstractComponent {
               <fieldset class="event__type-group">
                 <legend class="visually-hidden">Transfer</legend>
                 ${this._createEventTypeItem(eventTypes, `transfer`)}
-
               </fieldset>
 
               <fieldset class="event__type-group">
                 <legend class="visually-hidden">Activity</legend>
-
                 ${this._createEventTypeItem(eventTypes, `activity`)}
               </fieldset>
             </div>
@@ -84,9 +92,9 @@ export default class FormEdit extends AbstractComponent {
 
           <div class="event__field-group  event__field-group--destination">
             <label class="event__label  event__type-output" for="event-destination-1">
-              ${type.title} at
+              ${this._eventType.title} ${this._eventType.group === `transfer` ? `to` : `in`}
             </label>
-            <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${city}" list="destination-list-1">
+            <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${this._city}" list="destination-list-1">
             <datalist id="destination-list-1">
               ${this._createDestinationList()}
             </datalist>
@@ -114,6 +122,13 @@ export default class FormEdit extends AbstractComponent {
 
           <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
           <button class="event__reset-btn" type="reset">Cancel</button>
+          <input id="event-favorite-1" class="event__favorite-checkbox  visually-hidden" type="checkbox" name="event-favorite">
+          <label class="event__favorite-btn" for="event-favorite-1">
+            <span class="visually-hidden">Add to favorite</span>
+            <svg class="event__favorite-icon" width="28" height="28" viewBox="0 0 28 28">
+              <path d="M14 21l-8.22899 4.3262 1.57159-9.1631L.685209 9.67376 9.8855 8.33688 14 0l4.1145 8.33688 9.2003 1.33688-6.6574 6.48934 1.5716 9.1631L14 21z"/>
+            </svg>
+          </label>
         </header>
         <section class="event__details">
 
@@ -121,12 +136,12 @@ export default class FormEdit extends AbstractComponent {
             <h3 class="event__section-title  event__section-title--offers">Offers</h3>
 
             <div class="event__available-offers">
-              ${this._createOptionsList()}
+              ${this._eventType.group === `transfer` ? this._createOptionsList() : ``}
           </section>
 
           <section class="event__section  event__section--destination">
             <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-            <p class="event__destination-description">${text}</p>
+            <p class="event__destination-description">${this._text}</p>
 
             <div class="event__photos-container">
               <div class="event__photos-tape">
@@ -145,8 +160,70 @@ export default class FormEdit extends AbstractComponent {
   }
 
   setSubmitHandler(handler) {
-    this.getElement().querySelector(`form`)
-      .addEventListener(`submit`, handler);
+    if (!this._submitHandler) {
+      this._submitHandler = handler;
+    }
+
+    this.getElement().querySelector(`form`).addEventListener(`submit`, this._submitHandler);
+  }
+
+  setFavoritesButtonClickHandler(handler) {
+    this.getElement().querySelector(`.event__favorite-checkbox`)
+      .addEventListener(`change`, handler);
+  }
+
+  setCloseButtonClickHandler(handler) {
+    if (!this._resetHandler) {
+      this._resetHandler = handler;
+    }
+    this.getElement().querySelector(`.event__reset-btn`).addEventListener(`click`, this._resetHandler);
+  }
+
+  recoveryListeners() {
+    this.setSubmitHandler(this._submitHandler);
+    this.setCloseButtonClickHandler(this._resetHandler);
+    this._subscribeOnEvents();
+  }
+
+  rerender() {
+    super.rerender();
+
+    // this._applyFlatpickr();
+  }
+
+  reset() {
+    const formEdit = this._formEdit;
+
+    this._eventType = formEdit.type;
+    this._options = formEdit.options;
+    this._text = formEdit.text;
+
+    this.rerender();
+  }
+
+  _subscribeOnEvents() {
+    const element = this.getElement();
+
+    element.querySelector(`.event__favorite-checkbox`).addEventListener(`change`, () => {
+      this._formEdit = Object.assign({}, this._formEdit, {isFavorite: !this._formEdit.isFavorite});
+
+    });
+
+    element.querySelector(`.event__type-list`).addEventListener(`change`, (evt) => {
+      this._eventType = eventTypes.find((eventType) => eventType.name === evt.target.value);
+      this._options = generateOptionsList();
+
+      this.rerender();
+    });
+
+    element.querySelector(`.event__input--destination`).addEventListener(`change`, (evt) => {
+      if (cities.includes(evt.target.value)) {
+        this._city = evt.target.value;
+        this._text = generateDescriptionText();
+      }
+
+      this.rerender();
+    });
   }
 }
 

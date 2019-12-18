@@ -52,7 +52,7 @@ export default class TripCard extends AbstractComponent {
         <div class="event__type">
           <img class="event__type-icon" width="42" height="42" src="img/icons/${type.name}.png" alt="Event type icon">
         </div>
-        <h3 class="event__title">${type.title} ${city}</h3>
+        <h3 class="event__title">${type.title} ${type.group === `transfer` ? `to` : `in`} ${city}</h3>
 
         <div class="event__schedule">
           <p class="event__time">
@@ -69,7 +69,7 @@ export default class TripCard extends AbstractComponent {
 
         <h4 class="visually-hidden">Offers:</h4>
         <ul class="event__selected-offers">
-          ${this._createOptionsList()}
+          ${type.group === `transfer` ? this._createOptionsList() : ``}
         </ul>
         <button class="event__rollup-btn" type="button">
           <span class="visually-hidden">Open event</span>
