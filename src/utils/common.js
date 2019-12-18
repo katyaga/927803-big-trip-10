@@ -1,20 +1,28 @@
-export const castTimeFormat = (value) => {
-  return value < 10 ? `0${value}` : String(value);
-};
+import moment from 'moment';
 
 export const formatDateTime = (date) => {
-  const day = castTimeFormat(date.getDate());
-  const month = castTimeFormat(date.getMonth() + 1);
-  const year = String(date.getFullYear()).slice(2);
-  const hours = castTimeFormat(date.getHours());
-  const minutes = castTimeFormat(date.getMinutes());
-  return `${day}/${month}/${year} ${hours}:${minutes}`;
+  return moment(date).format(`DD/MM/YYYY HH:mm`);
 };
 
-export const formatTime = (date) => {
-  const hours = castTimeFormat(date.getHours());
-  const minutes = castTimeFormat(date.getMinutes());
-  return `${hours}:${minutes}`;
+export const formatTime = (time) => {
+  return moment(time).format(`HH:mm`);
+};
+
+export const getDurationDateTime = (start, end) => {
+  const dateStart = moment(start);
+  const dataEnd = moment(end);
+
+  const days = dataEnd.diff(dateStart, `days`);
+  dateStart.add(days, `days`);
+
+  const hours = dataEnd.diff(dateStart, `hours`);
+  dateStart.add(hours, `hours`);
+
+  const minutes = dataEnd.diff(dateStart, `minutes`);
+
+  return (`${days ? `${moment(days).format(`DD`)}D` : ``}
+    ${hours ? `${moment(hours).format(`HH`)}H` : ``}
+    ${minutes ? `${moment(minutes).format(`MM`)}M` : ``}`);
 };
 
 export const shuffleArray = (array) => {
