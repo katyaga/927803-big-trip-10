@@ -1,3 +1,6 @@
+import flatpickr from 'flatpickr';
+import 'flatpickr/dist/flatpickr.min.css';
+import 'flatpickr/dist/themes/light.css';
 import {eventTypes, cities} from "../const";
 import {formatDateTime} from "../utils/common";
 import {generateOptionsList, generateDescriptionText} from "../mock/trip-card";
@@ -12,10 +15,14 @@ export default class FormEdit extends AbstractSmartComponent {
     this._options = this._formEdit.options;
     this._text = this._formEdit.text;
     this._city = this._formEdit.city;
+    this._dateStart = this._formEdit.dateStart;
+    this._dateEnd = this._formEdit.dateEnd;
 
     this._submitHandler = null;
     this._resetHandler = null;
+    this._flatpickr = null;
 
+    this._applyFlatpickr();
     this._subscribeOnEvents();
   }
 
@@ -64,7 +71,7 @@ export default class FormEdit extends AbstractSmartComponent {
   }
 
   _createFormEditTemplate() {
-    const {price, dateStart, dateEnd} = this._formEdit;
+    const {price} = this._formEdit;
 
     return (
       `<li class="trip-events__item">
@@ -104,12 +111,12 @@ export default class FormEdit extends AbstractSmartComponent {
             <label class="visually-hidden" for="event-start-time-1">
               From
             </label>
-            <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${formatDateTime(dateStart)}">
+            <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${formatDateTime(this._dateStart)}">
             —
             <label class="visually-hidden" for="event-end-time-1">
               To
             </label>
-            <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${formatDateTime(dateEnd)}">
+            <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${formatDateTime(this._dateStart)}">
           </div>
 
           <div class="event__field-group  event__field-group--price">
@@ -167,6 +174,32 @@ export default class FormEdit extends AbstractSmartComponent {
     this.getElement().querySelector(`form`).addEventListener(`submit`, this._submitHandler);
   }
 
+  _applyFlatpickr() {
+    if (this._flatpickr) {
+      // При своем создании `flatpickr` дополнительно создает вспомогательные DOM-элементы.
+      // Что бы их удалять, нужно вызывать метод `destroy` у созданного инстанса `flatpickr`.
+      this._flatpickr.destroy();
+      this._flatpickr = null;
+    }
+
+    const dateStartElement = this.getElement().querySelector(`#event-start-time-1`);
+    this._flatpickr = flatpickr(dateStartElement, {
+      allowInput: true,
+      enableTime: true,
+      dateFormat: `d/m/Y H:i`,
+      defaultDate: this._dateStart,
+    });
+
+    const dateEndElement = this.getElement().querySelector(`#event-end-time-1`);
+    this._flatpickr = flatpickr(dateEndElement, {
+      allowInput: true,
+      enableTime: true,
+      dateFormat: `d/m/Y H:i`,
+      minDate: this._dateStart,
+      defaultDate: this._dateEnd,
+    });
+  }
+
   setFavoritesButtonClickHandler(handler) {
     this.getElement().querySelector(`.event__favorite-checkbox`)
       .addEventListener(`change`, handler);
@@ -188,7 +221,7 @@ export default class FormEdit extends AbstractSmartComponent {
   rerender() {
     super.rerender();
 
-    // this._applyFlatpickr();
+    this._applyFlatpickr();
   }
 
   reset() {
