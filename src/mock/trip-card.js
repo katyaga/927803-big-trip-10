@@ -76,6 +76,7 @@ const generateTripCard = () => {
   const date = generateRandomDate(currentDate, 2, 10);
 
   return {
+    id: String(new Date() + Math.random()),
     type: getRandomElement(eventTypes),
     city: getRandomElement(cities),
     photos: new Set(generatePhotos()),
@@ -106,7 +107,8 @@ const generateOrderedDates = (card, index, cards) => {
 };
 
 const generateTripCards = () => {
-  let tripCards = new Array(getRandomRange(3, 10)).fill(``).map(generateTripCard);
+  let tripCards = new Array(getRandomRange(3, 10)).fill(``)
+    .map(generateTripCard);
 
   return tripCards.map(generateOrderedDates);
 };

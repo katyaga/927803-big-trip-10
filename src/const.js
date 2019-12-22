@@ -58,6 +58,12 @@ export const eventTypes = [
   },
 ];
 
+export const FilterType = {
+  EVERYTHING: `everything`,
+  FUTURE: `future`,
+  PAST: `past`,
+};
+
 export const MonthNames = [
   `Jan`,
   `Feb`,
@@ -72,3 +78,4 @@ export const MonthNames = [
   `Nov`,
   `Dec`,
 ];
+

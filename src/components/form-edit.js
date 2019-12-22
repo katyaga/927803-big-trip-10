@@ -6,6 +6,25 @@ import {formatDateTime} from "../utils/common";
 import {generateOptionsList, generateDescriptionText} from "../mock/trip-card";
 import AbstractSmartComponent from "./abstract-smart-component";
 
+const parseFormData = (formData) => {
+  const repeatingDays = DAYS.reduce((acc, day) => {
+    acc[day] = false;
+    return acc;
+  }, {});
+  const date = formData.get(`date`);
+
+  return {
+    description: formData.get(`text`),
+    color: formData.get(`color`),
+    tags: formData.getAll(`hashtag`),
+    dueDate: date ? new Date(date) : null,
+    repeatingDays: formData.getAll(`repeat`).reduce((acc, it) => {
+      acc[it] = true;
+      return acc;
+    }, repeatingDays),
+  };
+};
+
 export default class FormEdit extends AbstractSmartComponent {
   constructor(formEdit) {
     super();
@@ -174,6 +193,14 @@ export default class FormEdit extends AbstractSmartComponent {
     this.getElement().querySelector(`form`).addEventListener(`submit`, this._submitHandler);
   }
 
+  setDeleteButtonClickHandler(handler) {
+    // console.log(this.getElement());
+    this.getElement().querySelector(`.event__reset-btn`)
+      .addEventListener(`click`, handler);
+
+    this._deleteButtonClickHandler = handler;
+  }
+
   _applyFlatpickr() {
     if (this._flatpickr) {
       // При своем создании `flatpickr` дополнительно создает вспомогательные DOM-элементы.
@@ -215,6 +242,7 @@ export default class FormEdit extends AbstractSmartComponent {
   recoveryListeners() {
     this.setSubmitHandler(this._submitHandler);
     this.setCloseButtonClickHandler(this._resetHandler);
+    this.setDeleteButtonClickHandler(this._deleteButtonClickHandler);
     this._subscribeOnEvents();
   }
 
@@ -234,8 +262,32 @@ export default class FormEdit extends AbstractSmartComponent {
     this.rerender();
   }
 
+  removeElement() {
+    if (this._flatpickr) {
+      this._flatpickr.destroy();
+      this._flatpickr = null;
+    }
+
+    super.removeElement();
+  }
+
+  getData() {
+    const form = this.getElement().querySelector(`.card__form`);
+    const formData = new FormData(form);
+
+    return parseFormData(formData);
+  }
+
   _subscribeOnEvents() {
     const element = this.getElement();
+
+    // element.querySelector(`.card__text`)
+    //   .addEventListener(`input`, (evt) => {
+    //     this._currentDescription = evt.target.value;
+    //
+    //     // const saveButton = this.getElement().querySelector(`.card__save`);
+    //     // saveButton.disabled = !isAllowableDescriptionLength(this._currentDescription);
+    //   });
 
     element.querySelector(`.event__favorite-checkbox`).addEventListener(`change`, () => {
       this._formEdit = Object.assign({}, this._formEdit, {isFavorite: !this._formEdit.isFavorite});
