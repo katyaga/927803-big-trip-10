@@ -1,11 +1,7 @@
-const filterNames = [
-  `everything`,
-  `future`,
-  `past`,
-];
+import {FilterType} from "../const";
 
 const generateFilters = () => {
-  return filterNames.map((it) => {
+  return Array.from(FilterType).map((it) => {
     return {
       name: it,
     };

@@ -61,4 +61,8 @@ export default class Sort extends AbstractComponent {
       handler(this._currenSortType);
     });
   }
+
+  getSortType() {
+    return this._currenSortType;
+  }
 }

@@ -65,7 +65,7 @@ export const generateOptionsList = () => {
   return shuffleArray(options).slice(0, getRandomRange(0, options.length));
 };
 
-const generatePhotos = () => {
+export const generatePhotos = () => {
   return new Array(5).fill(``).map(() =>
     `http://picsum.photos/300/150?r=${Math.random()}`
   );
@@ -76,6 +76,7 @@ const generateTripCard = () => {
   const date = generateRandomDate(currentDate, 2, 10);
 
   return {
+    id: String(new Date() + Math.random()),
     type: getRandomElement(eventTypes),
     city: getRandomElement(cities),
     photos: new Set(generatePhotos()),
@@ -106,7 +107,8 @@ const generateOrderedDates = (card, index, cards) => {
 };
 
 const generateTripCards = () => {
-  let tripCards = new Array(getRandomRange(3, 10)).fill(``).map(generateTripCard);
+  let tripCards = new Array(getRandomRange(3, 10)).fill(``)
+    .map(generateTripCard);
 
   return tripCards.map(generateOrderedDates);
 };
