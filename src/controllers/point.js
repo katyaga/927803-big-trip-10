@@ -1,9 +1,9 @@
 import TripCardComponent from "../components/trip-card";
 import FormEditComponent from "../components/form-edit";
 import {render, RenderPosition, remove, replace} from "../utils/render";
-import {getRandomElement} from "../utils/common";
-import {cities, eventTypes} from "../const";
-import {generateDescriptionText, generateOptionsList} from "../mock/trip-card";
+// import {getRandomElement} from "../utils/common";
+// import {cities, eventTypes} from "../const";
+// import {generateDescriptionText, generateOptionsList} from "../mock/trip-card";
 
 export const Mode = {
   ADDING: `adding`,
