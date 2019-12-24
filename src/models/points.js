@@ -1,5 +1,6 @@
 import {getPointsByFilter} from '../utils/filter.js';
 import {FilterType} from '../const.js';
+import {generateTripDays} from "../mock/trip-card";
 
 export default class Points {
   constructor() {
@@ -16,17 +17,26 @@ export default class Points {
     return this._points;
   }
 
-  getPoints() {
+  getFilteredPoints() {
     return getPointsByFilter(this._points, this._activeFilterType);
   }
 
+  getFilteredDays() {
+    const filteredPoints = getPointsByFilter(this._points, this._activeFilterType);
+    return generateTripDays(filteredPoints);
+  }
+
   getTripDays() {
+    this._getTripDays();
     return this._tripDays;
   }
 
-  setTripDays(tripDays) {
-    this._tripDays = Array.from(tripDays);
-    this._points = this._tripDays.flat();
+  _getTripDays() {
+    this._tripDays = generateTripDays(this._points);
+  }
+
+  setTripPoints(tripPoints) {
+    this._points = Array.from(tripPoints);
   }
 
   setFilter(filterType) {
@@ -49,7 +59,7 @@ export default class Points {
     return true;
   }
 
-  updateTask(id, point) {
+  updatePoints(id, point) {
     const index = this._points.findIndex((it) => it.id === id);
 
     if (index === -1) {

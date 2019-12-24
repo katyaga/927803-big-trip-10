@@ -1,27 +1,27 @@
 import flatpickr from 'flatpickr';
+import moment from 'moment';
 import 'flatpickr/dist/flatpickr.min.css';
 import 'flatpickr/dist/themes/light.css';
 import {eventTypes, cities} from "../const";
 import {formatDateTime} from "../utils/common";
-import {generateOptionsList, generateDescriptionText} from "../mock/trip-card";
+import {generateOptionsList, generateDescriptionText, generatePhotos} from "../mock/trip-card";
 import AbstractSmartComponent from "./abstract-smart-component";
 
 const parseFormData = (formData) => {
-  const repeatingDays = DAYS.reduce((acc, day) => {
-    acc[day] = false;
-    return acc;
-  }, {});
-  const date = formData.get(`date`);
+  let dateFormat = `DD/MM/YYYY HH:mm`;
 
   return {
-    description: formData.get(`text`),
-    color: formData.get(`color`),
-    tags: formData.getAll(`hashtag`),
-    dueDate: date ? new Date(date) : null,
-    repeatingDays: formData.getAll(`repeat`).reduce((acc, it) => {
-      acc[it] = true;
-      return acc;
-    }, repeatingDays),
+  // description: formData.get(`text`),
+    type: eventTypes.find((eventType) => eventType.name === formData.get(`event-type`)),
+    city: formData.get(`event-destination`),
+    photos: new Set(generatePhotos()),
+    // text: formData.get(``),
+    options: generateOptionsList(),
+    price: formData.get(`event-price`),
+    dateStart: moment(formData.get(`event-start-time`), dateFormat).toDate(),
+    dateEnd: moment(formData.get(`event-end-time`), dateFormat).toDate(),
+    // dateStart: formData.get(`event-start-time`),
+    // dateEnd: formData.get(`event-end-time`),
   };
 };
 
@@ -43,6 +43,7 @@ export default class FormEdit extends AbstractSmartComponent {
 
     this._applyFlatpickr();
     this._subscribeOnEvents();
+    // this._createFormEditTemplate = this._createFormEditTemplate.bind(this);
   }
 
   _createEventTypeItem(types, group) {
@@ -51,7 +52,8 @@ export default class FormEdit extends AbstractSmartComponent {
       .map((eventType) => {
         return (
           `<div class="event__type-item">
-              <input id="event-type-${eventType.name}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${eventType.name}">
+              <input id="event-type-${eventType.name}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${eventType.name}"
+              ${this._eventType === eventType ? `checked` : ``}>
               <label class="event__type-label  event__type-label--${eventType.name}" for="event-type-${eventType.name}-1">${eventType.title}</label>
            </div>`
         );
@@ -91,6 +93,7 @@ export default class FormEdit extends AbstractSmartComponent {
 
   _createFormEditTemplate() {
     const {price} = this._formEdit;
+    // console.log(this._formEdit.type);
 
     return (
       `<li class="trip-events__item">
@@ -141,9 +144,9 @@ export default class FormEdit extends AbstractSmartComponent {
           <div class="event__field-group  event__field-group--price">
             <label class="event__label" for="event-price-1">
               <span class="visually-hidden">Price</span>
-              ${price} €
+              €
             </label>
-            <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="">
+            <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${price}">
           </div>
 
           <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
@@ -248,7 +251,6 @@ export default class FormEdit extends AbstractSmartComponent {
 
   rerender() {
     super.rerender();
-
     this._applyFlatpickr();
   }
 
@@ -272,7 +274,7 @@ export default class FormEdit extends AbstractSmartComponent {
   }
 
   getData() {
-    const form = this.getElement().querySelector(`.card__form`);
+    const form = this.getElement().querySelector(`.trip-events__item`);
     const formData = new FormData(form);
 
     return parseFormData(formData);

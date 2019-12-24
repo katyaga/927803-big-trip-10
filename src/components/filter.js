@@ -3,7 +3,7 @@ import AbstractComponent from "./abstarct-component";
 const FILTER_ID_PREFIX = `filter__`;
 
 const getFilterNameById = (id) => {
-  return id.substring(FILTER_ID_PREFIX.length);
+  return id.substring(FILTER_ID_PREFIX.length - 1);
 };
 
 export default class Filter extends AbstractComponent {

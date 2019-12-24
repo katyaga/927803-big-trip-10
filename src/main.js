@@ -13,10 +13,10 @@ import {tripCards} from "./controllers/trip";
 // const filters = generateFilters();
 const siteMenu = generateSiteMenu();
 
-const tripDaysCards = generateTripDays(tripCards);
+// const tripDaysCards = generateTripDays(tripCards);
 
 const pointsModel = new PointsModel();
-pointsModel.setTripDays(tripDaysCards);
+pointsModel.setTripPoints(tripCards);
 
 const tripInfoElement = document.querySelector(`.trip-main__trip-info`);
 render(tripInfoElement, new RouteComponent(tripCards), RenderPosition.AFTERBEGIN);
@@ -30,6 +30,11 @@ const filterController = new FilterController(tripControlsElement, pointsModel);
 filterController.render();
 
 const menuTitleElement = tripControlsElement.querySelector(`h2`);
+
+document.querySelector(`.trip-main__event-add-btn`).addEventListener(`click`, () => {
+  boardController.createPoint();
+});
+
 render(menuTitleElement, new SiteMenuComponent(siteMenu), RenderPosition.AFTEREND);
 
 const tripEventsElement = document.querySelector(`.trip-events`);

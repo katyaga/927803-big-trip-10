@@ -1,7 +1,6 @@
 import FilterComponent from '../components/filter.js';
 import {FilterType} from '../const.js';
 import {render, replace, RenderPosition} from '../utils/render.js';
-// import {getPointsByFilter} from '../utils/filter.js';
 
 export default class FilterController {
   constructor(container, pointsModel) {
@@ -18,11 +17,9 @@ export default class FilterController {
   }
   render() {
     const container = this._container;
-    // const allTasks = this._pointsModel.getPointsAll();
     const filters = Object.values(FilterType).map((filterType) => {
       return {
         name: filterType,
-        // count: getPointsByFilter(allTasks, filterType).length,
         checked: filterType === this._activeFilterType,
       };
     });

@@ -65,7 +65,7 @@ export const generateOptionsList = () => {
   return shuffleArray(options).slice(0, getRandomRange(0, options.length));
 };
 
-const generatePhotos = () => {
+export const generatePhotos = () => {
   return new Array(5).fill(``).map(() =>
     `http://picsum.photos/300/150?r=${Math.random()}`
   );

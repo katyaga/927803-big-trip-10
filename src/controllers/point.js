@@ -12,12 +12,18 @@ export const Mode = {
 };
 
 export const EmptyPoint = {
-  type: null,
-  city: null,
-  dateStart: null,
-  dateEnd: null,
+  type: {
+    name: `taxi`,
+    title: `Taxi`,
+    group: `transfer`,
+  },
+  city: ``,
+  dateStart: Date.now(),
+  dateEnd: Date.now(),
   price: 0,
   options: [],
+  photos: [],
+  text: ``,
   isFavorite: false,
 };
 
@@ -34,7 +40,6 @@ export default class PointController {
 
     this._replaceEditToCard = this._replaceEditToCard.bind(this);
     this._replaceCardToEdit = this._replaceCardToEdit.bind(this);
-
     this._onEscKeyDown = this._onEscKeyDown.bind(this);
   }
 
@@ -57,10 +62,10 @@ export default class PointController {
       }));
     });
 
-    this._editCardComponent.setSubmitHandler((evt) => {
-      evt.preventDefault();
-      this._replaceEditToCard();
-    });
+    // this._editCardComponent.setSubmitHandler((evt) => {
+    //   evt.preventDefault();
+    //   this._replaceEditToCard();
+    // });
 
     this._editCardComponent.setCloseButtonClickHandler(() => {
       this._replaceEditToCard();
@@ -109,6 +114,7 @@ export default class PointController {
   }
 
   destroy() {
+    // console.log(this._editCardComponent);
     remove(this._editCardComponent);
     remove(this._cardComponent);
     document.removeEventListener(`keydown`, this._onEscKeyDown);
