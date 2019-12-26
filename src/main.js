@@ -4,10 +4,10 @@ import SiteMenuComponent from "./components/site-menu";
 import FilterController from './controllers/filter.js';
 import TripController from "./controllers/trip";
 import PointsModel from "./models/points";
-import {generateTripDays, getTripCost} from "./mock/trip-card";
+// import {generateTripDays, getTripCost} from "./mock/trip-card";
 import {generateSiteMenu} from "./mock/site-menu";
 // import {generateFilters} from "./mock/filter";
-import {render, RenderPosition} from "./utils/render";
+import {render, RenderPosition, renderTravelCost} from "./utils/render";
 import {tripCards} from "./controllers/trip";
 
 // const filters = generateFilters();
@@ -21,8 +21,10 @@ pointsModel.setTripPoints(tripCards);
 const tripInfoElement = document.querySelector(`.trip-main__trip-info`);
 render(tripInfoElement, new RouteComponent(tripCards), RenderPosition.AFTERBEGIN);
 
-const tripCostElement = tripInfoElement.querySelector(`.trip-info__cost-value`);
-tripCostElement.innerHTML = getTripCost(tripCards);
+renderTravelCost(tripCards);
+
+// const tripCostElement = tripInfoElement.querySelector(`.trip-info__cost-value`);
+// tripCostElement.innerHTML = getTripCost(tripCards);
 
 const tripControlsElement = document.querySelector(`.trip-main__trip-controls`);
 // render(tripControlsElement, new FilterComponent(filters), RenderPosition.BEFOREEND);

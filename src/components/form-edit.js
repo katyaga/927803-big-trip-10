@@ -7,7 +7,7 @@ import {formatDateTime} from "../utils/common";
 import {generateOptionsList, generateDescriptionText, generatePhotos} from "../mock/trip-card";
 import AbstractSmartComponent from "./abstract-smart-component";
 
-const parseFormData = (formData) => {
+const parseFormData = (formData, options, description) => {
   let dateFormat = `DD/MM/YYYY HH:mm`;
 
   return {
@@ -16,12 +16,19 @@ const parseFormData = (formData) => {
     city: formData.get(`event-destination`),
     photos: new Set(generatePhotos()),
     // text: formData.get(``),
-    options: generateOptionsList(),
+    options: options.map((option) => {
+      return {
+        name: option.name,
+        price: option.price,
+        type: option.type,
+        checked:
+          formData.get(`event-offer-${option.type}`) === `on`
+      };
+    }),
+    text: description,
     price: formData.get(`event-price`),
     dateStart: moment(formData.get(`event-start-time`), dateFormat).toDate(),
     dateEnd: moment(formData.get(`event-end-time`), dateFormat).toDate(),
-    // dateStart: formData.get(`event-start-time`),
-    // dateEnd: formData.get(`event-end-time`),
   };
 };
 
@@ -43,7 +50,6 @@ export default class FormEdit extends AbstractSmartComponent {
 
     this._applyFlatpickr();
     this._subscribeOnEvents();
-    // this._createFormEditTemplate = this._createFormEditTemplate.bind(this);
   }
 
   _createEventTypeItem(types, group) {
@@ -53,7 +59,7 @@ export default class FormEdit extends AbstractSmartComponent {
         return (
           `<div class="event__type-item">
               <input id="event-type-${eventType.name}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${eventType.name}"
-              ${this._eventType === eventType ? `checked` : ``}>
+              ${this._eventType.name === eventType.name ? `checked` : ``}>
               <label class="event__type-label  event__type-label--${eventType.name}" for="event-type-${eventType.name}-1">${eventType.title}</label>
            </div>`
         );
@@ -72,7 +78,8 @@ export default class FormEdit extends AbstractSmartComponent {
     return options.map((option) => {
       return (
         `<div class="event__offer-selector">
-          <input class="event__offer-checkbox  visually-hidden" id="event-offer-${option.type}-1" type="checkbox" name="event-offer-${option.type}">
+          <input class="event__offer-checkbox  visually-hidden" id="event-offer-${option.type}-1" type="checkbox" name="event-offer-${option.type}"
+          ${option.checked ? `checked` : ``}>
           <label class="event__offer-label" for="event-offer-${option.type}-1">
             <span class="event__offer-title">${option.name}</span>
             +
@@ -93,7 +100,6 @@ export default class FormEdit extends AbstractSmartComponent {
 
   _createFormEditTemplate() {
     const {price} = this._formEdit;
-    // console.log(this._formEdit.type);
 
     return (
       `<li class="trip-events__item">
@@ -123,7 +129,7 @@ export default class FormEdit extends AbstractSmartComponent {
             <label class="event__label  event__type-output" for="event-destination-1">
               ${this._eventType.title} ${this._eventType.group === `transfer` ? `to` : `in`}
             </label>
-            <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${this._city}" list="destination-list-1">
+            <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${this._city}" list="destination-list-1" required>
             <datalist id="destination-list-1">
               ${this._createDestinationList()}
             </datalist>
@@ -165,7 +171,7 @@ export default class FormEdit extends AbstractSmartComponent {
             <h3 class="event__section-title  event__section-title--offers">Offers</h3>
 
             <div class="event__available-offers">
-              ${this._eventType.group === `transfer` ? this._createOptionsList() : ``}
+              ${this._createOptionsList()}
           </section>
 
           <section class="event__section  event__section--destination">
@@ -277,7 +283,7 @@ export default class FormEdit extends AbstractSmartComponent {
     const form = this.getElement().querySelector(`.trip-events__item`);
     const formData = new FormData(form);
 
-    return parseFormData(formData);
+    return parseFormData(formData, this._options, this._text);
   }
 
   _subscribeOnEvents() {

@@ -1,5 +1,5 @@
 import {cities, eventTypes} from "../const";
-import {shuffleArray, getRandomRange, getRandomElement} from "../utils/common";
+import {shuffleArray, getRandomRange, getRandomElement, getRandomBoolean} from "../utils/common";
 
 const descriptionText = `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras aliquet varius magna,
   non porta ligula feugiat eget. Fusce tristique felis at fermentum pharetra. Aliquam id orci ut lectus varius viverra.
@@ -60,6 +60,14 @@ const options = [
     price: getPrice(5, 20)
   },
 ];
+
+const setCheckOptions = (optionsList) => {
+  optionsList.forEach((option) => {
+    option.checked = getRandomBoolean();
+  });
+};
+
+setCheckOptions(options);
 
 export const generateOptionsList = () => {
   return shuffleArray(options).slice(0, getRandomRange(0, options.length));
@@ -133,13 +141,13 @@ const generateTripDays = (tripCards) => {
   return tripDays;
 };
 
-const getTripCost = (tripDays) => {
-  const tripDaysCards = tripDays.flat();
-  let tripCost = 0;
-  tripDaysCards.forEach((tripDaysCard) => {
-    tripCost += tripDaysCard.price;
-  });
-  return tripCost;
-};
+// const getTripCost = (tripDays) => {
+//   const tripDaysCards = tripDays.flat();
+//   let tripCost = 0;
+//   tripDaysCards.forEach((tripDaysCard) => {
+//     tripCost += tripDaysCard.price;
+//   });
+//   return tripCost;
+// };
 
-export {generateTripCard, generateTripCards, generateTripDays, getTripCost};
+export {generateTripCard, generateTripCards, generateTripDays};
