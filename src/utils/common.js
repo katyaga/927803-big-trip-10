@@ -60,3 +60,25 @@ export const getRandomElement = (arr) => {
   return arr[rand];
 };
 
+export const generateTripDays = (tripCards) => {
+  let tripDays = [];
+  let currentCards = [];
+
+  const sortTripCards = tripCards.slice().sort((a, b) => a.dateStart - b.dateStart);
+
+  sortTripCards.forEach((card, i, cards) => {
+    let previousCard = i > 0 ? cards[i - 1] : null;
+
+    if (previousCard && card.dateStart.getDate() !== previousCard.dateStart.getDate()) {
+      tripDays.push(currentCards);
+      currentCards = [];
+    }
+    currentCards.push(card);
+    if (i === cards.length - 1) {
+      tripDays.push(currentCards);
+    }
+  });
+
+  return tripDays;
+};
+

@@ -1,6 +1,6 @@
 import {getPointsByFilter} from '../utils/filter.js';
 import {FilterType} from '../const.js';
-import {generateTripDays} from "../mock/trip-card";
+import {generateTripDays} from "../utils/common.js";
 
 export default class Points {
   constructor() {
@@ -67,6 +67,8 @@ export default class Points {
     }
 
     this._points = [].concat(this._points.slice(0, index), point, this._points.slice(index + 1));
+
+    // console.log(this._points);
 
     // this._dataChangeHandlers.forEach((handler) => handler());
     this._callHandlers(this._dataChangeHandlers);

@@ -121,33 +121,4 @@ const generateTripCards = () => {
   return tripCards.map(generateOrderedDates);
 };
 
-const generateTripDays = (tripCards) => {
-  let tripDays = [];
-  let currentCards = [];
-
-  tripCards.forEach((card, i, cards) => {
-    let previousCard = i > 0 ? cards[i - 1] : null;
-
-    if (previousCard && card.dateStart.getDate() !== previousCard.dateStart.getDate()) {
-      tripDays.push(currentCards);
-      currentCards = [];
-    }
-    currentCards.push(card);
-    if (i === cards.length - 1) {
-      tripDays.push(currentCards);
-    }
-  });
-
-  return tripDays;
-};
-
-// const getTripCost = (tripDays) => {
-//   const tripDaysCards = tripDays.flat();
-//   let tripCost = 0;
-//   tripDaysCards.forEach((tripDaysCard) => {
-//     tripCost += tripDaysCard.price;
-//   });
-//   return tripCost;
-// };
-
-export {generateTripCard, generateTripCards, generateTripDays};
+export {generateTripCard, generateTripCards};

@@ -100,9 +100,7 @@ export default class FormEdit extends AbstractSmartComponent {
   }
 
   _createFormEditTemplate() {
-    // const {price} = this._formEdit;
-
-    const isBlockSaveButton = (this._dateStart >= this._dateEnd);
+    const isBlockSaveButton = (this._dateStart >= this._dateEnd) || (this._price <= 0);
 
     return (
       `<li class="trip-events__item">
@@ -298,7 +296,7 @@ export default class FormEdit extends AbstractSmartComponent {
 
     const saveButton = this.getElement().querySelector(`.event__save-btn`);
     const isBlockSaveButton = (this._dateStart >= this._dateEnd) || (this._city === ``) ||
-      (isNaN(this._price));
+      (isNaN(this._price) || (this._price <= 0));
 
     element.querySelector(`#event-start-time-1`)
       .addEventListener(`change`, (evt) => {
