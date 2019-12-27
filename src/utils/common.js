@@ -10,19 +10,37 @@ export const formatTime = (time) => {
 
 export const getDurationDateTime = (start, end) => {
   const dateStart = moment(start);
-  const dataEnd = moment(end);
+  const dateEnd = moment(end);
 
-  const days = dataEnd.diff(dateStart, `days`);
-  dateStart.add(days, `days`);
+  const duration = moment.duration(dateEnd.diff(dateStart));
 
-  const hours = dataEnd.diff(dateStart, `hours`);
-  dateStart.add(hours, `hours`);
+  const getDays = () => {
+    const days = duration.get(`days`);
+    if (days) {
+      return `${days < 10 ? `0${days}D ` : `${days}D`} `;
+    } else {
+      return ``;
+    }
+  };
+  const getHours = () => {
+    const hours = duration.get(`hours`);
+    if (hours) {
+      return `${hours < 10 ? `0${hours}H ` : `${hours}H `}`;
+    } else {
+      return ``;
+    }
+  };
 
-  const minutes = dataEnd.diff(dateStart, `minutes`);
+  const getMinutes = () => {
+    const minutes = duration.get(`minutes`);
+    if (minutes) {
+      return `${minutes < 10 ? `0${minutes}M ` : `${minutes}M `}`;
+    } else {
+      return ``;
+    }
+  };
 
-  return (`${days ? `${moment(days).format(`DD`)}D` : ``}
-    ${hours ? `${moment(hours).format(`HH`)}H` : ``}
-    ${minutes ? `${moment(minutes).format(`MM`)}M` : ``}`);
+  return (`${getDays()}${getHours()}${getMinutes()}`);
 };
 
 export const shuffleArray = (array) => {

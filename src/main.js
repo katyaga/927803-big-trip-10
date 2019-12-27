@@ -23,6 +23,12 @@ render(tripInfoElement, new RouteComponent(tripCards), RenderPosition.AFTERBEGIN
 
 renderTravelCost(tripCards);
 
+pointsModel.setDataChangeHandler(() => {
+  const points = pointsModel.getPointsAll();
+
+  renderTravelCost(points);
+});
+
 // const tripCostElement = tripInfoElement.querySelector(`.trip-info__cost-value`);
 // tripCostElement.innerHTML = getTripCost(tripCards);
 

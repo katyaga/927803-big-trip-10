@@ -55,8 +55,8 @@ export default class TripController {
         this._pointsModel.addPoint(newData);
         pointController.render(newData, PointControllerMode.DEFAULT);
 
-        const destroyedPoint = this._tripCardsControllers.pop();
-        destroyedPoint.destroy();
+        // const destroyedPoint = this._tripCardsControllers.pop();
+        // destroyedPoint.destroy();
 
         this._tripCardsControllers = [].concat(pointController, this._tripCardsControllers);
       }
@@ -68,6 +68,7 @@ export default class TripController {
 
       if (isSuccess) {
         pointController.render(newData, PointControllerMode.DEFAULT);
+        this._updatePoints();
       }
     }
   }
