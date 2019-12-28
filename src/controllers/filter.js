@@ -15,6 +15,7 @@ export default class FilterController {
 
     this._pointsModel.setDataChangeHandler(this._onDataChange);
   }
+
   render() {
     const container = this._container;
     const filters = Object.values(FilterType).map((filterType) => {
