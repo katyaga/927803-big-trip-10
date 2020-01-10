@@ -82,3 +82,5 @@ export const generateTripDays = (tripCards) => {
   return tripDays;
 };
 
+export const HIDDEN_CLASS = `visually-hidden`;
+

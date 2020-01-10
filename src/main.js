@@ -1,5 +1,6 @@
 import RouteComponent from "./components/route";
-import SiteMenuComponent from "./components/site-menu";
+import SiteMenuComponent, {MenuItem} from "./components/site-menu";
+import StatisticsComponent from './components/statistics.js';
 import FilterController from './controllers/filter.js';
 import TripController from "./controllers/trip";
 import PointsModel from "./models/points";
@@ -25,6 +26,8 @@ pointsModel.setDataChangeHandler(() => {
   remove(routeComponent);
   routeComponent = new RouteComponent(points);
   render(tripInfoElement, routeComponent, RenderPosition.AFTERBEGIN);
+  statisticsComponent = new StatisticsComponent(points.flat());
+  render(tripEventsElement, statisticsComponent, RenderPosition.AFTEREND);
 });
 
 const tripControlsElement = document.querySelector(`.trip-main__trip-controls`);
@@ -37,11 +40,26 @@ document.querySelector(`.trip-main__event-add-btn`).addEventListener(`click`, ()
   boardController.createPoint();
 });
 
-render(menuTitleElement, new SiteMenuComponent(siteMenu), RenderPosition.AFTEREND);
+let statisticsComponent = new StatisticsComponent(pointsModel.getPointsAll());
+const siteMenuComponent = new SiteMenuComponent(siteMenu);
+
+render(menuTitleElement, siteMenuComponent, RenderPosition.AFTEREND);
 
 const tripEventsElement = document.querySelector(`.trip-events`);
 const boardController = new TripController(tripEventsElement, pointsModel);
+render(tripEventsElement, statisticsComponent, RenderPosition.AFTEREND);
 
+statisticsComponent.hide();
 boardController.render();
 
+siteMenuComponent.setClickHandler((evt) => {
+  siteMenuComponent.setActiveItem(evt.target);
+  if (evt.target.dataset.tab === MenuItem.STATISTICS) {
+    boardController.hide();
+    statisticsComponent.show();
+  } else {
+    statisticsComponent.hide();
+    boardController.show();
+  }
+});
 

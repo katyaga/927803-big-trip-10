@@ -5,6 +5,7 @@ import {render, RenderPosition} from "../utils/render";
 import {generateTripCards} from "../mock/trip-card";
 import TripDayComponent from "../components/trip-day";
 import PointController, {Mode as PointControllerMode, EmptyPoint} from "./point";
+import {HIDDEN_CLASS} from "../utils/common";
 
 export const tripCards = generateTripCards();
 
@@ -29,6 +30,15 @@ export default class TripController {
     this._pointsModel.setFilterChangeHandler(this._onFilterChange);
   }
 
+
+  show() {
+    this._container.classList.remove(HIDDEN_CLASS);
+  }
+
+  hide() {
+    this._container.classList.add(HIDDEN_CLASS);
+  }
+
   render() {
     this._tripDays = this._pointsModel.getTripDays();
     this._tripPoints = this._pointsModel.getPointsAll();
@@ -41,6 +51,14 @@ export default class TripController {
       render(this._container, this._sortComponent, RenderPosition.BEFOREEND);
       render(this._container, this._tripDaysComponent, RenderPosition.BEFOREEND);
       this._renderTripPoints(this._tripDays, this._tripPoints);
+      // const getUniqItems = (item, index, array) => {
+      //   return array.indexOf(item) === index;
+      // };
+      // const getTrevelTypes = (points) => {
+      //   return points.flat().map((point) => point.type)
+      //     .filter(getUniqItems);
+      // };
+      // console.log(getTrevelTypes(this._tripPoints));
     }
   }
 

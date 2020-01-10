@@ -42,7 +42,6 @@ export default class Points {
   setFilter(filterType) {
     this._activeFilterType = filterType;
     this._callHandlers(this._filterChangeHandlers);
-    // this._filterChangeHandlers.forEach((handler) => handler());
   }
 
   removePoint(id) {
