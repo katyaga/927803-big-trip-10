@@ -10,23 +10,45 @@ export const formatTime = (time) => {
 
 export const getDurationDateTime = (start, end) => {
   const dateStart = moment(start);
-  const dataEnd = moment(end);
+  const dateEnd = moment(end);
 
-  const days = dataEnd.diff(dateStart, `days`);
-  dateStart.add(days, `days`);
+  const duration = moment.duration(dateEnd.diff(dateStart));
 
-  const hours = dataEnd.diff(dateStart, `hours`);
-  dateStart.add(hours, `hours`);
+  const getDays = () => {
+    const days = duration.get(`days`);
+    if (days) {
+      return `${days < 10 ? `0${days}D ` : `${days}D`} `;
+    } else {
+      return ``;
+    }
+  };
+  const getHours = () => {
+    const hours = duration.get(`hours`);
+    if (hours) {
+      return `${hours < 10 ? `0${hours}H ` : `${hours}H `}`;
+    } else {
+      return ``;
+    }
+  };
 
-  const minutes = dataEnd.diff(dateStart, `minutes`);
+  const getMinutes = () => {
+    const minutes = duration.get(`minutes`);
+    if (minutes) {
+      return `${minutes < 10 ? `0${minutes}M ` : `${minutes}M `}`;
+    } else {
+      return ``;
+    }
+  };
 
-  return (`${days ? `${moment(days).format(`DD`)}D` : ``}
-    ${hours ? `${moment(hours).format(`HH`)}H` : ``}
-    ${minutes ? `${moment(minutes).format(`MM`)}M` : ``}`);
+  return (`${getDays()}${getHours()}${getMinutes()}`);
 };
 
 export const shuffleArray = (array) => {
   return array.slice().sort(() => Math.random() - 0.5);
+};
+
+export const getRandomBoolean = () => {
+  return (Math.random() - 0.5) > 0;
 };
 
 export const getRandomRange = (min, max) => {
@@ -37,4 +59,28 @@ export const getRandomElement = (arr) => {
   const rand = getRandomRange(0, arr.length - 1);
   return arr[rand];
 };
+
+export const generateTripDays = (tripCards) => {
+  let tripDays = [];
+  let currentCards = [];
+
+  const sortTripCards = tripCards.slice().sort((a, b) => a.dateStart - b.dateStart);
+
+  sortTripCards.forEach((card, i, cards) => {
+    let previousCard = i > 0 ? cards[i - 1] : null;
+
+    if (previousCard && card.dateStart.getDate() !== previousCard.dateStart.getDate()) {
+      tripDays.push(currentCards);
+      currentCards = [];
+    }
+    currentCards.push(card);
+    if (i === cards.length - 1) {
+      tripDays.push(currentCards);
+    }
+  });
+
+  return tripDays;
+};
+
+export const HIDDEN_CLASS = `visually-hidden`;
 

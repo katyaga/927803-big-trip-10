@@ -41,3 +41,26 @@ export const replace = (newComponent, oldComponent) => {
     parentElement.replaceChild(newElement, oldElement);
   }
 };
+
+const getTripCost = (tripDays) => {
+  const tripDaysCards = tripDays.flat();
+  let tripCost = 0;
+  let optionsCardCost = 0;
+  tripDaysCards.forEach((tripDaysCard) => {
+    optionsCardCost = 0;
+    tripDaysCard.options.forEach((option) => {
+      if (option.checked === true) {
+        optionsCardCost += option.price;
+      }
+    });
+
+    tripCost = tripCost + tripDaysCard.price + optionsCardCost;
+  });
+
+  return tripCost;
+};
+
+export const renderTravelCost = (tripPoints) => {
+  const tripCostElement = document.querySelector(`.trip-info__cost-value`);
+  tripCostElement.innerHTML = getTripCost(tripPoints);
+};

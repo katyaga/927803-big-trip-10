@@ -12,7 +12,8 @@ export default class TripCard extends AbstractComponent {
   }
 
   _createOptionsList() {
-    let visibleOptions = (this._options.length > 3) ? this._options.slice(0, 3) : this._options;
+    const checkedOptions = this._options.filter((checkedOption) => checkedOption.checked === true);
+    const visibleOptions = (checkedOptions.length > 3) ? checkedOptions.slice(0, 3) : checkedOptions;
     return visibleOptions.map((option) => {
       return (
         `<li class="event__offer">
@@ -54,7 +55,7 @@ export default class TripCard extends AbstractComponent {
 
         <h4 class="visually-hidden">Offers:</h4>
         <ul class="event__selected-offers">
-          ${type.group === `transfer` ? this._createOptionsList() : ``}
+          ${this._createOptionsList()}
         </ul>
         <button class="event__rollup-btn" type="button">
           <span class="visually-hidden">Open event</span>
