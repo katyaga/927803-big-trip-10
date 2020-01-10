@@ -95,7 +95,8 @@ export default class FormEdit extends AbstractSmartComponent {
     const photos = this._formEdit.photos;
     const destinationPhotos = Array.from(photos);
     return destinationPhotos.map((destinationPhoto) => {
-      return `<img class="event__photo" src=${destinationPhoto} alt="Event photo">`;
+      // return `<img class="event__photo" src=${destinationPhoto} alt="Event photo">`;
+      return `<img class="event__photo" src=${destinationPhoto.src} alt="${destinationPhoto.description}">`;
     }).join(`\n`);
   }
 
@@ -241,16 +242,16 @@ export default class FormEdit extends AbstractSmartComponent {
       .addEventListener(`change`, handler);
   }
 
-  setCloseButtonClickHandler(handler) {
-    if (!this._resetHandler) {
-      this._resetHandler = handler;
-    }
-    this.getElement().querySelector(`.event__reset-btn`).addEventListener(`click`, this._resetHandler);
-  }
+  // setCloseButtonClickHandler(handler) {
+  //   if (!this._resetHandler) {
+  //     this._resetHandler = handler;
+  //   }
+  //   this.getElement().querySelector(`.event__reset-btn`).addEventListener(`click`, this._resetHandler);
+  // }
 
   recoveryListeners() {
     this.setSubmitHandler(this._submitHandler);
-    this.setCloseButtonClickHandler(this._resetHandler);
+    // this.setCloseButtonClickHandler(this._resetHandler);
     this.setDeleteButtonClickHandler(this._deleteButtonClickHandler);
     this._subscribeOnEvents();
   }

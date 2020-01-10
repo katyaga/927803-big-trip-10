@@ -4,11 +4,11 @@ import StatisticsComponent from './components/statistics.js';
 import FilterController from './controllers/filter.js';
 import TripController from "./controllers/trip";
 import PointsModel from "./models/points";
-import {generateSiteMenu} from "./mock/site-menu";
+// import {generateSiteMenu} from "./mock/site-menu";
 import {remove, render, RenderPosition, renderTravelCost} from "./utils/render";
 import {tripCards} from "./controllers/trip";
 
-const siteMenu = generateSiteMenu();
+// const siteMenu = generateSiteMenu();
 
 const pointsModel = new PointsModel();
 pointsModel.setTripPoints(tripCards);
@@ -19,16 +19,7 @@ render(tripInfoElement, routeComponent, RenderPosition.AFTERBEGIN);
 
 renderTravelCost(tripCards);
 
-pointsModel.setDataChangeHandler(() => {
-  const points = pointsModel.getFilteredDays();
 
-  renderTravelCost(points);
-  remove(routeComponent);
-  routeComponent = new RouteComponent(points);
-  render(tripInfoElement, routeComponent, RenderPosition.AFTERBEGIN);
-  statisticsComponent = new StatisticsComponent(points.flat());
-  render(tripEventsElement, statisticsComponent, RenderPosition.AFTEREND);
-});
 
 const tripControlsElement = document.querySelector(`.trip-main__trip-controls`);
 const filterController = new FilterController(tripControlsElement, pointsModel);
@@ -41,7 +32,7 @@ document.querySelector(`.trip-main__event-add-btn`).addEventListener(`click`, ()
 });
 
 let statisticsComponent = new StatisticsComponent(pointsModel.getPointsAll());
-const siteMenuComponent = new SiteMenuComponent(siteMenu);
+const siteMenuComponent = new SiteMenuComponent();
 
 render(menuTitleElement, siteMenuComponent, RenderPosition.AFTEREND);
 
@@ -61,5 +52,18 @@ siteMenuComponent.setClickHandler((evt) => {
     statisticsComponent.hide();
     boardController.show();
   }
+});
+
+pointsModel.setDataChangeHandler(() => {
+  const points = pointsModel.getFilteredDays();
+
+  renderTravelCost(points);
+  remove(routeComponent);
+  routeComponent = new RouteComponent(points);
+  render(tripInfoElement, routeComponent, RenderPosition.AFTERBEGIN);
+
+  statisticsComponent = new StatisticsComponent(points.flat());
+  render(tripEventsElement, statisticsComponent, RenderPosition.AFTEREND);
+  statisticsComponent.hide();
 });
 
