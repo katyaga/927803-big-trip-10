@@ -74,9 +74,10 @@ export const generateOptionsList = () => {
 };
 
 export const generatePhotos = () => {
-  return new Array(5).fill(``).map(() =>
-    `http://picsum.photos/300/150?r=${Math.random()}`
-  );
+  return new Array(5).fill(``).map(() => ({
+    src: `http://picsum.photos/300/150?r=${Math.random()}`,
+    description: `ilhhu`,
+  }));
 };
 
 const generateTripCard = () => {
@@ -87,13 +88,15 @@ const generateTripCard = () => {
     id: String(new Date() + Math.random()),
     type: getRandomElement(eventTypes),
     city: getRandomElement(cities),
-    photos: new Set(generatePhotos()),
-    text: generateDescriptionText(),
-    options: generateOptionsList(),
-    price: getPrice(5, 40),
     dateStart: date,
     dateEnd: generateRandomDate(date, 1, 1),
+    price: getPrice(5, 40),
     isFavorite: false,
+
+    photos: new Set(generatePhotos()),
+    text: generateDescriptionText(),
+
+    options: generateOptionsList(),
   };
 };
 

@@ -37,6 +37,7 @@ export default class Points {
 
   setTripPoints(tripPoints) {
     this._points = Array.from(tripPoints);
+    this._callHandlers(this._dataChangeHandlers);
   }
 
   setFilter(filterType) {

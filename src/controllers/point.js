@@ -64,9 +64,9 @@ export default class PointController {
     //   this._replaceEditToCard();
     // });
 
-    this._editCardComponent.setCloseButtonClickHandler(() => {
-      this._replaceEditToCard();
-    });
+    // this._editCardComponent.setCloseButtonClickHandler(() => {
+    //   this._replaceEditToCard();
+    // });
 
     // if (oldPointEditComponent && oldPointComponent) {
     //   replace(this._cardComponent, oldPointComponent);
@@ -119,7 +119,10 @@ export default class PointController {
   _replaceEditToCard() {
     this._editCardComponent.reset();
 
-    replace(this._cardComponent, this._editCardComponent);
+    // replace(this._cardComponent, this._editCardComponent);
+    if (document.contains(this._editCardComponent.getElement())) {
+      replace(this._cardComponent, this._editCardComponent);
+    }
     this._mode = Mode.DEFAULT;
   }
 

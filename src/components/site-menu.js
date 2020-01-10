@@ -8,22 +8,19 @@ export const MenuItem = {
 };
 
 export default class SiteMenu extends AbstractComponent {
-  constructor(menu) {
+  constructor() {
     super();
 
-    this._menu = menu;
     this._active = MenuItem.TABLE;
   }
 
   _createSiteMenuItem(filter, isActive) {
-    const {name} = filter;
-
-    return `<a class="trip-tabs__btn ${isActive ? `${ACTIVE_ITEM_CLASS}` : ``}" data-tab="${name}"
-          href="#">${name}</a>`;
+    return `<a class="trip-tabs__btn ${isActive ? `${ACTIVE_ITEM_CLASS}` : ``}" data-tab="${filter}"
+          href="#">${filter}</a>`;
   }
 
   _createSiteMenuTemplate() {
-    const siteMenuItem = this._menu.map((it, i) => this._createSiteMenuItem(it, i === 0)).join(`\n`);
+    const siteMenuItem = Object.values(MenuItem).map((it, i) => this._createSiteMenuItem(it, i === 0)).join(`\n`);
     return (
       `<nav class="trip-controls__trip-tabs  trip-tabs">
       ${siteMenuItem}
@@ -41,8 +38,6 @@ export default class SiteMenu extends AbstractComponent {
     }
     this._element.querySelector(`.${ACTIVE_ITEM_CLASS}`).classList.remove(ACTIVE_ITEM_CLASS);
     menuItem.classList.add(ACTIVE_ITEM_CLASS);
-
-
   }
 
   setClickHandler(handler) {
