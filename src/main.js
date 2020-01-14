@@ -5,23 +5,32 @@ import StatisticsComponent from './components/statistics.js';
 import FilterController from './controllers/filter.js';
 import TripController from "./controllers/trip";
 import PointsModel from "./models/points";
-// import {generateSiteMenu} from "./mock/site-menu";
 import {remove, render, RenderPosition, renderTravelCost} from "./utils/render";
-// import {tripCards} from "./controllers/trip";
 
 const AUTHORIZATION = `Basic dXNlckBwYXNzd29yZAo=`;
 const END_POINT = `https://htmlacademy-es-10.appspot.com/big-trip/`;
 
-// const siteMenu = generateSiteMenu();
-
 const api = new API(END_POINT, AUTHORIZATION);
 
 const pointsModel = new PointsModel();
-// pointsModel.setTripPoints(tripCards);
+
+const init = (points) => {
+  if (routeComponent) {
+    remove(routeComponent);
+  }
+  routeComponent = new RouteComponent(points);
+  render(tripInfoElement, routeComponent, RenderPosition.AFTERBEGIN);
+  renderTravelCost(pointsModel.getPointsAll());
+
+  statisticsComponent = new StatisticsComponent(points);
+  render(tripEventsElement, statisticsComponent, RenderPosition.AFTEREND);
+  statisticsComponent.hide();
+
+  boardController.render();
+};
 
 const tripInfoElement = document.querySelector(`.trip-main__trip-info`);
 let routeComponent;
-
 
 const tripControlsElement = document.querySelector(`.trip-main__trip-controls`);
 const filterController = new FilterController(tripControlsElement, pointsModel);
@@ -39,9 +48,7 @@ const siteMenuComponent = new SiteMenuComponent();
 render(menuTitleElement, siteMenuComponent, RenderPosition.AFTEREND);
 
 const tripEventsElement = document.querySelector(`.trip-events`);
-const boardController = new TripController(tripEventsElement, pointsModel);
-
-// boardController.render();
+const boardController = new TripController(tripEventsElement, pointsModel, api);
 
 siteMenuComponent.setClickHandler((evt) => {
   siteMenuComponent.setActiveItem(evt.target);
@@ -57,12 +64,13 @@ siteMenuComponent.setClickHandler((evt) => {
 pointsModel.setDataChangeHandler(() => {
   const points = pointsModel.getFilteredDays();
 
-  renderTravelCost(points);
   if (routeComponent) {
     remove(routeComponent);
   }
   routeComponent = new RouteComponent(points);
   render(tripInfoElement, routeComponent, RenderPosition.AFTERBEGIN);
+
+  renderTravelCost(points);
 
   statisticsComponent = new StatisticsComponent(points.flat());
   render(tripEventsElement, statisticsComponent, RenderPosition.AFTEREND);
@@ -87,18 +95,6 @@ api.getPoints()
       });
   })
   .then(() => {
-
-    if (routeComponent) {
-      remove(routeComponent);
-    }
-    routeComponent = new RouteComponent(pointsModel.getPointsAll());
-    render(tripInfoElement, routeComponent, RenderPosition.AFTERBEGIN);
-    renderTravelCost(pointsModel.getPointsAll());
-
-    statisticsComponent = new StatisticsComponent(pointsModel.getPointsAll());
-    render(tripEventsElement, statisticsComponent, RenderPosition.AFTEREND);
-    statisticsComponent.hide();
-
-    boardController.render();
+    init(pointsModel.getPointsAll());
   });
 

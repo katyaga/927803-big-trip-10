@@ -78,7 +78,7 @@ export default class Points {
     return true;
   }
 
-  updatePoints(id, point) {
+  updatePoint(id, point) {
     const index = this._points.findIndex((it) => it.id === id);
 
     if (index === -1) {
@@ -86,8 +86,6 @@ export default class Points {
     }
 
     this._points = [].concat(this._points.slice(0, index), point, this._points.slice(index + 1));
-
-    // console.log(this._points);
 
     // this._dataChangeHandlers.forEach((handler) => handler());
     this._callHandlers(this._dataChangeHandlers);

@@ -10,9 +10,10 @@ import {HIDDEN_CLASS} from "../utils/common";
 // export const tripCards = generateTripCards();
 
 export default class TripController {
-  constructor(container, pointsModel) {
+  constructor(container, pointsModel, api) {
     this._container = container;
     this._pointsModel = pointsModel;
+    this._api = api;
 
     // this._destinations = this._pointsModel.getDestinations();
     // this._offers = this._pointsModel.getOffers();
@@ -82,12 +83,22 @@ export default class TripController {
       this._pointsModel.removePoint(oldData.id);
       this._updatePoints();
     } else {
-      const isSuccess = this._pointsModel.updatePoints(oldData.id, newData);
+      // console.log(newData);
+      this._api.updatePoint(oldData.id, newData)
+        .then((pointModel) => {
+          const isSuccess = this._pointsModel.updatePoint(oldData.id, pointModel);
 
-      if (isSuccess) {
-        pointController.render(newData, PointControllerMode.DEFAULT);
-        this._updatePoints();
-      }
+          if (isSuccess) {
+            pointController.render(pointModel, PointControllerMode.DEFAULT);
+            this._updatePoints();
+          }
+        });
+      // const isSuccess = this._pointsModel.updatePoints(oldData.id, newData);
+      //
+      // if (isSuccess) {
+      //   pointController.render(newData, PointControllerMode.DEFAULT);
+      //   this._updatePoints();
+      // }
     }
   }
 

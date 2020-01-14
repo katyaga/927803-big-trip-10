@@ -16,11 +16,11 @@ export default class Point {
       'id': `${this.id}`,
       'type': this.type,
       'destination': this.destination,
-      'dateStart': this.dateStart.toISOString(),
-      'dateEnd': this.dateEnd.toISOString(),
-      'price': this.price,
-      'isFavorite': this.isFavorite,
-      'options': this.options,
+      'date_from': this.dateStart.toISOString(),
+      'date_to': this.dateEnd.toISOString(),
+      'base_price': this.price,
+      'is_favorite': this.isFavorite,
+      'offers': this.options,
     };
   }
 
@@ -31,13 +31,16 @@ export default class Point {
   static parsePoints(data) {
     return data.map(Point.parsePoint);
   }
+
+  static clone(data) {
+    return new Point(data.toRAW());
+  }
 }
 
 const setChecked = (arr) => {
   arr.forEach((elem) => {
     elem.checked = true;
   });
-  console.log(arr);
 
   return arr;
 };

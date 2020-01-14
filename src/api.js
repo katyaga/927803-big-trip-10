@@ -43,6 +43,14 @@ const API = class {
   }
 
   updatePoint(id, data) {
+    return this._load({
+      url: `points/${id}`,
+      method: Method.PUT,
+      body: JSON.stringify(data.toRAW()),
+      headers: new Headers({'Content-Type': `application/json`})
+    })
+      .then((response) => response.json())
+      .then(Point.parsePoint);
   }
 
   deletePoint(id) {

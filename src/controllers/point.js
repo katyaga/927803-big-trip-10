@@ -1,6 +1,9 @@
 import TripCardComponent from "../components/trip-card";
 import FormEditComponent from "../components/form-edit";
+import Point from '../models/point.js';
 import {render, RenderPosition, remove, replace} from "../utils/render";
+import {getDestination} from "../components/form-edit";
+import moment from "moment";
 
 export const Mode = {
   ADDING: `adding`,
@@ -20,6 +23,24 @@ export const EmptyPoint = {
   price: 0,
   options: [],
   isFavorite: false,
+};
+
+const parseFormData = (formData, destinationsList, pointOptions) => {
+  const dateFormat = `DD/MM/YYYY HH:mm`;
+  // console.log(Boolean(formData.get(`event-favorite`) === `on`));
+
+  return new Point({
+    // description: formData.get(`text`),
+    'type': formData.get(`event-type`),
+    'destination': getDestination(formData.get(`event-destination`), destinationsList),
+    'offers': pointOptions,
+    'base_price': +formData.get(`event-price`),
+    'date_from': moment(formData.get(`event-start-time`), dateFormat).toDate().toISOString(),
+    'date_to': moment(formData.get(`event-end-time`), dateFormat).toDate().toISOString(),
+    'is_favorite': Boolean(formData.get(`event-favorite`) === `on`),
+    // dateStart: (formData.get(`event-start-time`)).toISOString(),
+    // dateEnd: (formData.get(`event-end-time`)).toISOString(),
+  });
 };
 
 export default class PointController {
@@ -46,6 +67,7 @@ export default class PointController {
 
     const destinations = this._pointsModel.getDestinations();
     const offers = this._pointsModel.getOffers();
+    const pointOffers = card.options;
 
     // console.log(`card`, card);
     this._cardComponent = new TripCardComponent(card);
@@ -57,9 +79,14 @@ export default class PointController {
     });
 
     this._editCardComponent.setFavoritesButtonClickHandler(() => {
-      this._onDataChange(this, card, Object.assign({}, card, {
-        isFavorite: !card.isFavorite,
-      }));
+      // this._onDataChange(this, card, Object.assign({}, card, {
+      //   isFavorite: !card.isFavorite,
+      // }));
+
+      const newPoint = Point.clone(card);
+      newPoint.isFavorite = !newPoint.isFavorite;
+
+      // this._onDataChange(this, card, newPoint);
     });
 
     // this._editCardComponent.setSubmitHandler((evt) => {
@@ -80,7 +107,14 @@ export default class PointController {
 
     this._editCardComponent.setSubmitHandler((evt) => {
       evt.preventDefault();
-      const data = this._editCardComponent.getData();
+
+      const formData = this._editCardComponent.getData();
+      const data = parseFormData(formData, destinations, pointOffers);
+
+      console.log(data);
+
+
+      // const data = this._editCardComponent.getData();
       this._onDataChange(this, card, data);
     });
 
