@@ -7,6 +7,9 @@ export default class Points {
     this._tripDays = [];
     this._points = [];
 
+    this._destinations = [];
+    this._offers = [];
+
     this._activeFilterType = FilterType.EVERYTHING;
 
     this._filterChangeHandlers = [];
@@ -38,6 +41,22 @@ export default class Points {
   setTripPoints(tripPoints) {
     this._points = Array.from(tripPoints);
     this._callHandlers(this._dataChangeHandlers);
+  }
+
+  setDestinations(destinations) {
+    this._destinations = destinations;
+  }
+
+  getDestinations() {
+    return this._destinations;
+  }
+
+  setOffers(offers) {
+    this._offers = offers;
+  }
+
+  getOffers() {
+    return this._offers;
   }
 
   setFilter(filterType) {

@@ -48,7 +48,9 @@ const getTripCost = (tripDays) => {
   let optionsCardCost = 0;
   tripDaysCards.forEach((tripDaysCard) => {
     optionsCardCost = 0;
-    tripDaysCard.options.forEach((option) => {
+    console.log(tripDaysCard.options);
+    Array.from(tripDaysCard.options).forEach((option) => {
+
       if (option.checked === true) {
         optionsCardCost += option.price;
       }

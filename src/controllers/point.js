@@ -9,26 +9,25 @@ export const Mode = {
 };
 
 export const EmptyPoint = {
-  type: {
-    name: `taxi`,
-    title: `Taxi`,
-    group: `transfer`,
+  type: `taxi`,
+  destinations: {
+    name: ``,
+    description: ``,
+    pictures: [],
   },
-  city: ``,
   dateStart: Date.now(),
   dateEnd: Date.now(),
   price: 0,
   options: [],
-  photos: [],
-  text: ``,
   isFavorite: false,
 };
 
 export default class PointController {
-  constructor(container, onDataChange, onViewChange) {
+  constructor(container, onDataChange, onViewChange, pointsModel) {
     this._container = container;
     this._onDataChange = onDataChange;
     this._onViewChange = onViewChange;
+    this._pointsModel = pointsModel;
 
     this._mode = Mode.DEFAULT;
 
@@ -45,8 +44,12 @@ export default class PointController {
     const oldPointEditComponent = this._editCardComponent;
     this._mode = mode;
 
+    const destinations = this._pointsModel.getDestinations();
+    const offers = this._pointsModel.getOffers();
+
+    // console.log(`card`, card);
     this._cardComponent = new TripCardComponent(card);
-    this._editCardComponent = new FormEditComponent(card);
+    this._editCardComponent = new FormEditComponent(card, destinations, offers);
 
     this._cardComponent.setEditButtonClickHandler(() => {
       this._replaceCardToEdit();

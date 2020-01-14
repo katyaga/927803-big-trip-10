@@ -2,11 +2,12 @@ export default class Point {
   constructor(data) {
     this.id = data[`id`];
     this.type = data[`type`];
-    this.dateStart = data[`date_from`];
-    this.dateEnd = data[`date_to`];
+    this.destination = data[`destination`];
+    this.dateStart = new Date(data[`date_from`]);
+    this.dateEnd = new Date(data[`date_to`]);
     this.destination = data[`destination`];
     this.price = data[`base_price`];
-    this.offers = data[`offers`];
+    this.options = data[`offers`] ? setChecked(data[`offers`]) : [];
     this.isFavorite = data[`is_favorite`];
   }
 
@@ -14,12 +15,12 @@ export default class Point {
     return {
       'id': `${this.id}`,
       'type': this.type,
-      'city': this.destination,
-      'dateStart': new Date(this.dateStart).toISOString(),
-      'dateEnd': new Date(this.dateEnd).toISOString(),
+      'destination': this.destination,
+      'dateStart': this.dateStart.toISOString(),
+      'dateEnd': this.dateEnd.toISOString(),
       'price': this.price,
       'isFavorite': this.isFavorite,
-      'options': this.offers,
+      'options': this.options,
     };
   }
 
@@ -31,3 +32,12 @@ export default class Point {
     return data.map(Point.parsePoint);
   }
 }
+
+const setChecked = (arr) => {
+  arr.forEach((elem) => {
+    elem.checked = true;
+  });
+  console.log(arr);
+
+  return arr;
+};

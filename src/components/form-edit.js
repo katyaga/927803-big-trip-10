@@ -2,30 +2,31 @@ import flatpickr from 'flatpickr';
 import moment from 'moment';
 import 'flatpickr/dist/flatpickr.min.css';
 import 'flatpickr/dist/themes/light.css';
-import {eventTypes, cities} from "../const";
+import {eventTypes, transferNames} from "../const";
 import {formatDateTime} from "../utils/common";
-import {generateOptionsList, generateDescriptionText, generatePhotos} from "../mock/trip-card";
+// import {generateOptionsList, generateDescriptionText} from "../mock/trip-card";
 import AbstractSmartComponent from "./abstract-smart-component";
 
-const parseFormData = (formData, options, description) => {
+const getDestination = (destinationName, allDestinations) => {
+  return allDestinations.find((destination) => destination.name === destinationName);
+};
+
+const getOptions = (optionType, allOptions) => {
+  return allOptions.find((option) => option.type === optionType);
+};
+
+const parseFormData = (formData, destinationsList, pointOptions) => {
   const dateFormat = `DD/MM/YYYY HH:mm`;
+  // const options = getOptions(formData.get(`event-type`), optionsList);
 
   return {
   // description: formData.get(`text`),
-    type: eventTypes.find((eventType) => eventType.name === formData.get(`event-type`)),
-    city: formData.get(`event-destination`),
-    photos: new Set(generatePhotos()),
+    type: formData.get(`event-type`),
+    destination: getDestination(formData.get(`event-destination`), destinationsList),
+    // photos: new Set(generatePhotos()),
     // text: formData.get(``),
-    options: options.map((option) => {
-      return {
-        name: option.name,
-        price: option.price,
-        type: option.type,
-        checked:
-          formData.get(`event-offer-${option.type}`) === `on`
-      };
-    }),
-    text: description,
+    options: pointOptions,
+    // text: description,
     price: +formData.get(`event-price`),
     dateStart: moment(formData.get(`event-start-time`), dateFormat).toDate(),
     dateEnd: moment(formData.get(`event-end-time`), dateFormat).toDate(),
@@ -33,14 +34,21 @@ const parseFormData = (formData, options, description) => {
 };
 
 export default class FormEdit extends AbstractSmartComponent {
-  constructor(formEdit) {
+  constructor(formEdit, destinationsList, optionsList) {
     super();
 
     this._formEdit = formEdit;
     this._eventType = this._formEdit.type;
     this._options = this._formEdit.options;
-    this._text = this._formEdit.text;
-    this._city = this._formEdit.city;
+    this._destination = this._formEdit.destination;
+
+    this._destinationsList = destinationsList;
+    this._optionsList = optionsList;
+
+    // this._text = this._formEdit.destination.description;
+    // this._city = this._formEdit.destination.name;
+    // this._photo = this._formEdit.destination.pictures;
+
     this._dateStart = this._formEdit.dateStart;
     this._dateEnd = this._formEdit.dateEnd;
     this._price = this._formEdit.price;
@@ -60,7 +68,7 @@ export default class FormEdit extends AbstractSmartComponent {
         return (
           `<div class="event__type-item">
               <input id="event-type-${eventType.name}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${eventType.name}"
-              ${this._eventType.name === eventType.name ? `checked` : ``}>
+              ${this._eventType === eventType.name ? `checked` : ``}>
               <label class="event__type-label  event__type-label--${eventType.name}" for="event-type-${eventType.name}-1">${eventType.title}</label>
            </div>`
         );
@@ -69,20 +77,21 @@ export default class FormEdit extends AbstractSmartComponent {
   }
 
   _createDestinationList() {
-    return cities.map((destinationCity) => {
-      return `<option value="${destinationCity}"></option>`;
+    return this._destinationsList.map((destination) => {
+      return `<option value="${destination.name}"></option>`;
     }).join(`\n`);
   }
 
   _createOptionsList() {
     const options = this._options;
+
     return options.map((option) => {
       return (
         `<div class="event__offer-selector">
-          <input class="event__offer-checkbox  visually-hidden" id="event-offer-${option.type}-1" type="checkbox" name="event-offer-${option.type}"
+          <input class="event__offer-checkbox  visually-hidden" id="event-offer-${option.title}-1" type="checkbox" name="event-offer-${option.title}"
           ${option.checked ? `checked` : ``}>
-          <label class="event__offer-label" for="event-offer-${option.type}-1">
-            <span class="event__offer-title">${option.name}</span>
+          <label class="event__offer-label" for="event-offer-${option.title}-1">
+            <span class="event__offer-title">${option.title}</span>
             +
             €&nbsp;<span class="event__offer-price">${option.price}</span>
           </label>
@@ -92,10 +101,8 @@ export default class FormEdit extends AbstractSmartComponent {
   }
 
   _createPhotoList() {
-    const photos = this._formEdit.photos;
-    const destinationPhotos = Array.from(photos);
+    const destinationPhotos = Array.from(this._destination.pictures);
     return destinationPhotos.map((destinationPhoto) => {
-      // return `<img class="event__photo" src=${destinationPhoto} alt="Event photo">`;
       return `<img class="event__photo" src=${destinationPhoto.src} alt="${destinationPhoto.description}">`;
     }).join(`\n`);
   }
@@ -110,7 +117,7 @@ export default class FormEdit extends AbstractSmartComponent {
           <div class="event__type-wrapper">
             <label class="event__type  event__type-btn" for="event-type-toggle-1">
               <span class="visually-hidden">Choose event type</span>
-              <img class="event__type-icon" width="17" height="17" src="img/icons/${this._eventType.name}.png" alt="Event type icon">
+              <img class="event__type-icon" width="17" height="17" src="img/icons/${this._eventType}.png" alt="Event type icon">
             </label>
             <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
 
@@ -129,9 +136,9 @@ export default class FormEdit extends AbstractSmartComponent {
 
           <div class="event__field-group  event__field-group--destination">
             <label class="event__label  event__type-output" for="event-destination-1">
-              ${this._eventType.title} ${this._eventType.group === `transfer` ? `to` : `in`}
+              ${this._eventType} ${transferNames.includes(this._eventType) ? `to` : `in`}
             </label>
-            <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${this._city}" list="destination-list-1" required>
+            <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${this._destination.name}" list="destination-list-1" required>
             <datalist id="destination-list-1">
               ${this._createDestinationList()}
             </datalist>
@@ -178,7 +185,7 @@ export default class FormEdit extends AbstractSmartComponent {
 
           <section class="event__section  event__section--destination">
             <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-            <p class="event__destination-description">${this._text}</p>
+            <p class="event__destination-description">${this._destination.description}</p>
 
             <div class="event__photos-container">
               <div class="event__photos-tape">
@@ -266,11 +273,15 @@ export default class FormEdit extends AbstractSmartComponent {
 
     this._eventType = formEdit.type;
     this._options = formEdit.options;
-    this._text = formEdit.text;
+
+    this._destination = formEdit.destination;
+
+    // this._text = formEdit.text;
+    // this._city = formEdit.city;
+    // this._price = formEdit.price;
+
     this._dateStart = formEdit.dateStart;
     this._dateEnd = formEdit.dateEnd;
-    this._city = formEdit.city;
-    this._price = formEdit.price;
 
     this.rerender();
   }
@@ -288,7 +299,7 @@ export default class FormEdit extends AbstractSmartComponent {
     const form = this.getElement().querySelector(`.trip-events__item`);
     const formData = new FormData(form);
 
-    return parseFormData(formData, this._options, this._text);
+    return parseFormData(formData, this._destinationsList, this._options);
   }
 
   _subscribeOnEvents() {
@@ -296,7 +307,7 @@ export default class FormEdit extends AbstractSmartComponent {
     const dateFormat = `DD/MM/YYYY HH:mm`;
 
     const saveButton = this.getElement().querySelector(`.event__save-btn`);
-    const isBlockSaveButton = (this._dateStart >= this._dateEnd) || (this._city === ``) ||
+    const isBlockSaveButton = (this._dateStart >= this._dateEnd) || (this._destination.name === ``) ||
       (isNaN(this._price) || (this._price <= 0));
 
     element.querySelector(`#event-start-time-1`)
@@ -327,16 +338,17 @@ export default class FormEdit extends AbstractSmartComponent {
     });
 
     element.querySelector(`.event__type-list`).addEventListener(`change`, (evt) => {
-      this._eventType = eventTypes.find((eventType) => eventType.name === evt.target.value);
-      this._options = generateOptionsList();
+      this._eventType = eventTypes.find((eventType) => eventType.name === evt.target.value).name;
+      this._options = (getOptions(evt.target.value, this._optionsList))[`offers`];
 
       this.rerender();
     });
 
     element.querySelector(`.event__input--destination`).addEventListener(`change`, (evt) => {
-      if (cities.includes(evt.target.value)) {
-        this._city = evt.target.value;
-        this._text = generateDescriptionText();
+
+      if (this._destinationsList.some((destination) => destination.name === evt.target.value)) {
+        this._destination = getDestination(evt.target.value, this._destinationsList);
+        // this._text = generateDescriptionText();
       }
 
       // console.log((this._dateStart >= this._dateEnd), (this._city === ``),
@@ -356,6 +368,19 @@ export default class FormEdit extends AbstractSmartComponent {
 
         this.rerender();
       });
+
+    const offerCheckboxes = element.querySelectorAll(`.event__offer-checkbox`); // all
+    if (offerCheckboxes) {
+      offerCheckboxes.forEach((offerCheckbox) => {
+        offerCheckbox.addEventListener(`change`, () => {
+          const inputName = offerCheckbox.name;
+          const changedOption = this._options.find((option) => {
+            return `event-offer-${option.title}` === inputName;
+          });
+          changedOption.checked = !changedOption.checked;
+        });
+      });
+    }
   }
 }
 
