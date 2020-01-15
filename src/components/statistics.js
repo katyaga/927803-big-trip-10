@@ -2,6 +2,7 @@ import Chart from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import moment from 'moment';
 import AbstractSmartComponent from './abstract-smart-component.js';
+import {transferNames} from "../const";
 
 const getUniqItems = (item, index, array) => {
   return array.indexOf(item) === index;
@@ -112,71 +113,86 @@ const createChart = (ctx, title, labels, getValues) => {
 
 const renderPricesChart = (pricesCtx, points) => {
   const uniqTravelTypes = getTravelTypes(points);
-  const typeNames = uniqTravelTypes.map((getTravelType) => getTravelType.name);
+
+  const arrTypesPrice = uniqTravelTypes.map((uniqTravelType) => {
+    return {
+      name: uniqTravelType,
+      price: 0,
+    };
+  });
 
   const getTravelPrices = () => {
-    uniqTravelTypes.forEach((uniqTravelType) => {
-      uniqTravelType.price = 0;
-    });
-
     points.forEach((point) => {
-      const uniqTravelType = uniqTravelTypes.find(
-          (item) => item.name === point.type.name
+      const uniqTravelType = arrTypesPrice.find(
+          (item) => item.name === point.type
       );
       uniqTravelType.price += point.price;
     });
 
-    return uniqTravelTypes.map((uniqTravelType) => uniqTravelType.price);
+    return arrTypesPrice.map((uniqTravelType) => uniqTravelType.price);
+
   };
 
-  createChart(pricesCtx, `MONEY`, typeNames, getTravelPrices);
+  createChart(pricesCtx, `MONEY`, uniqTravelTypes, getTravelPrices);
 };
 
 const renderTransportCountChart = (transportCountCtx, points) => {
-  const uniqTransportTypes = getTravelTypes(points).filter((travelType) => travelType.group === `transfer`);
-  const transportTypeNames = uniqTransportTypes.map((transportType) => transportType.name);
+  const uniqTransportTypes = getTravelTypes(points).filter(
+      (travelType) => transferNames.includes(travelType)
+  );
+
+  const arrTypesCount = uniqTransportTypes.map((uniqTransportType) => {
+    return {
+      name: uniqTransportType,
+      count: 0,
+    };
+  });
+  // const transportTypeNames = uniqTransportTypes.map((transportType) => transportType);
 
   const getTransportCount = () => {
-    uniqTransportTypes.forEach((uniqTransportType) => {
-      uniqTransportType.count = 0;
-    });
-
     points.forEach((point) => {
-      if (point.type.group === `transfer`) {
-        const uniqTransportType = uniqTransportTypes.find(
-            (item) => item.name === point.type.name
+      if (transferNames.includes(point.type)) {
+        const uniqTransportType = arrTypesCount.find(
+            (item) => item.name === point.type
         );
 
         uniqTransportType.count += 1;
       }
     });
 
-    return uniqTransportTypes.map((uniqTransportType) => uniqTransportType.count);
+    return arrTypesCount.map((uniqTransportType) => uniqTransportType.count);
   };
 
-  createChart(transportCountCtx, `TRANSPORT`, transportTypeNames, getTransportCount);
+  createChart(transportCountCtx, `TRANSPORT`, uniqTransportTypes, getTransportCount);
 };
 
 const renderTimeChart = (timeSpentCtx, points) => {
   const uniqTravelTypes = getTravelTypes(points);
-  const typeNames = uniqTravelTypes.map((getTravelType) => getTravelType.name);
+  // const typeNames = uniqTravelTypes.map((getTravelType) => getTravelType.name);
+  const arrTypesTime = uniqTravelTypes.map((uniqTravelType) => {
+    return {
+      name: uniqTravelType,
+      duration: 0,
+    };
+  });
 
   const getTimeSpent = () => {
-    uniqTravelTypes.forEach((uniqTravelType) => {
-      uniqTravelType.duration = 0;
-    });
+    // uniqTravelTypes.forEach((uniqTravelType) => {
+    //   uniqTravelType.duration = 0;
+    // });
 
     points.forEach((point) => {
-      const uniqTravelType = uniqTravelTypes.find(
-          (item) => item.name === point.type.name
+      const duration = point.dateEnd - point.dateStart;
+      const uniqTravelType = arrTypesTime.find(
+          (item) => item.name === point.type
       );
-      uniqTravelType.duration += point.duration;
+      uniqTravelType.duration += duration;
     });
 
-    return uniqTravelTypes.map((uniqTravelType) => uniqTravelType.duration);
+    return arrTypesTime.map((uniqTravelType) => uniqTravelType.duration);
   };
 
-  createChart(timeSpentCtx, `TIME SPENT`, typeNames, getTimeSpent);
+  createChart(timeSpentCtx, `TIME SPENT`, uniqTravelTypes, getTimeSpent);
 };
 
 const createStatisticsTemplate = () => {

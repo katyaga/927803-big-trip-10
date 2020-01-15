@@ -22,7 +22,7 @@ export default class Route extends AbstractComponent {
   _getRouteCities() {
     let routeCityList = [];
     this._tripCards.forEach((tripCard) => {
-      routeCityList.push(tripCard.city);
+      routeCityList.push(tripCard.destination.name);
     });
     let routeCityCount = routeCityList.length;
     if (routeCityCount <= 3) {

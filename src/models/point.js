@@ -2,11 +2,12 @@ export default class Point {
   constructor(data) {
     this.id = data[`id`];
     this.type = data[`type`];
-    this.dateStart = data[`date_from`];
-    this.dateEnd = data[`date_to`];
+    this.destination = data[`destination`];
+    this.dateStart = new Date(data[`date_from`]);
+    this.dateEnd = new Date(data[`date_to`]);
     this.destination = data[`destination`];
     this.price = data[`base_price`];
-    this.offers = data[`offers`];
+    this.options = data[`offers`] ? setChecked(data[`offers`]) : [];
     this.isFavorite = data[`is_favorite`];
   }
 
@@ -14,12 +15,12 @@ export default class Point {
     return {
       'id': `${this.id}`,
       'type': this.type,
-      'city': this.destination,
-      'dateStart': new Date(this.dateStart).toISOString(),
-      'dateEnd': new Date(this.dateEnd).toISOString(),
-      'price': this.price,
-      'isFavorite': this.isFavorite,
-      'options': this.offers,
+      'destination': this.destination,
+      'date_from': this.dateStart.toISOString(),
+      'date_to': this.dateEnd.toISOString(),
+      'base_price': this.price,
+      'is_favorite': this.isFavorite,
+      'offers': this.options,
     };
   }
 
@@ -30,4 +31,16 @@ export default class Point {
   static parsePoints(data) {
     return data.map(Point.parsePoint);
   }
+
+  static clone(data) {
+    return new Point(data.toRAW());
+  }
 }
+
+const setChecked = (arr) => {
+  arr.forEach((elem) => {
+    elem.checked = true;
+  });
+
+  return arr;
+};

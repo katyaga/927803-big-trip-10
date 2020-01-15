@@ -1,5 +1,6 @@
 import {formatTime, getDurationDateTime} from "../utils/common";
 import AbstractComponent from "./abstarct-component";
+import {transferNames} from "../const";
 
 export default class TripCard extends AbstractComponent {
   constructor(tripCard) {
@@ -7,6 +8,7 @@ export default class TripCard extends AbstractComponent {
 
     this._tripCard = tripCard;
     this._options = tripCard.options;
+    this._destination = tripCard.destination;
     this._dateStart = tripCard.dateStart;
     this._dateEnd = tripCard.dateEnd;
   }
@@ -17,7 +19,7 @@ export default class TripCard extends AbstractComponent {
     return visibleOptions.map((option) => {
       return (
         `<li class="event__offer">
-          <span class="event__offer-title">${option.name}</span>
+          <span class="event__offer-title">${option.title}</span>
           &plus;
           &euro;&nbsp;<span class="event__offer-price">${option.price}</span>
          </li>`
@@ -30,15 +32,15 @@ export default class TripCard extends AbstractComponent {
   }
 
   _createTripCardTemplate() {
-    const {type, city, price} = this._tripCard;
+    const {type, price} = this._tripCard;
 
     return (
       `<li class="trip-events__item">
       <div class="event">
         <div class="event__type">
-          <img class="event__type-icon" width="42" height="42" src="img/icons/${type.name}.png" alt="Event type icon">
+          <img class="event__type-icon" width="42" height="42" src="img/icons/${type}.png" alt="Event type icon">
         </div>
-        <h3 class="event__title">${type.title} ${type.group === `transfer` ? `to` : `in`} ${city}</h3>
+        <h3 class="event__title">${type} ${transferNames.includes(type) ? `to` : `in`} ${this._destination.name}</h3>
 
         <div class="event__schedule">
           <p class="event__time">
