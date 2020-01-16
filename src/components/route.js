@@ -10,6 +10,7 @@ export default class Route extends AbstractComponent {
   }
 
   _getRouteDays() {
+    // console.log(this._tripCards);
     const dateStart = this._tripCards[0].dateStart;
     const dateEnd = this._tripCards[this._tripCards.length - 1].dateEnd;
     const monthStart = MonthNames[dateStart.getMonth()];

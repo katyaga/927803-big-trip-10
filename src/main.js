@@ -15,40 +15,35 @@ const api = new API(END_POINT, AUTHORIZATION);
 const pointsModel = new PointsModel();
 
 const init = (points) => {
+  const orderedPoints = pointsModel.getFilteredDays();
+
   if (routeComponent) {
     remove(routeComponent);
   }
-  routeComponent = new RouteComponent(points);
+  routeComponent = new RouteComponent(orderedPoints);
   render(tripInfoElement, routeComponent, RenderPosition.AFTERBEGIN);
   renderTravelCost(pointsModel.getPointsAll());
 
   statisticsComponent = new StatisticsComponent(points);
   render(tripEventsElement, statisticsComponent, RenderPosition.AFTEREND);
   statisticsComponent.hide();
-
-  boardController.render();
 };
 
 const tripInfoElement = document.querySelector(`.trip-main__trip-info`);
-let routeComponent;
 
 const tripControlsElement = document.querySelector(`.trip-main__trip-controls`);
 const filterController = new FilterController(tripControlsElement, pointsModel);
 filterController.render();
 
 const menuTitleElement = tripControlsElement.querySelector(`h2`);
+const tripEventsElement = document.querySelector(`.trip-events`);
 
-document.querySelector(`.trip-main__event-add-btn`).addEventListener(`click`, () => {
-  boardController.createPoint();
-});
-
-let statisticsComponent;
 const siteMenuComponent = new SiteMenuComponent();
-
 render(menuTitleElement, siteMenuComponent, RenderPosition.AFTEREND);
 
-const tripEventsElement = document.querySelector(`.trip-events`);
-const boardController = new TripController(tripEventsElement, pointsModel, api);
+let routeComponent;
+let statisticsComponent;
+let boardController;
 
 siteMenuComponent.setClickHandler((evt) => {
   siteMenuComponent.setActiveItem(evt.target);
@@ -62,24 +57,21 @@ siteMenuComponent.setClickHandler((evt) => {
 });
 
 pointsModel.setDataChangeHandler(() => {
-  const points = pointsModel.getFilteredDays();
-
-  if (routeComponent) {
-    remove(routeComponent);
-  }
-  routeComponent = new RouteComponent(points);
-  render(tripInfoElement, routeComponent, RenderPosition.AFTERBEGIN);
-
-  renderTravelCost(points);
-
-  statisticsComponent = new StatisticsComponent(points.flat());
-  render(tripEventsElement, statisticsComponent, RenderPosition.AFTEREND);
-  statisticsComponent.hide();
+  const points = pointsModel.getFilteredDays().flat();
+  init(points);
+  // if (routeComponent) {
+  //   remove(routeComponent);
+  // }
+  // routeComponent = new RouteComponent(points);
+  // render(tripInfoElement, routeComponent, RenderPosition.AFTERBEGIN);
+  // renderTravelCost(points);
+  // statisticsComponent = new StatisticsComponent(points);
+  // render(tripEventsElement, statisticsComponent, RenderPosition.AFTEREND);
+  // statisticsComponent.hide();
 });
 
 api.getPoints()
   .then((points) => {
-    console.log(points);
     pointsModel.setTripPoints(points);
   })
   .then(() => {
@@ -96,5 +88,12 @@ api.getPoints()
   })
   .then(() => {
     init(pointsModel.getPointsAll());
+
+    boardController = new TripController(tripEventsElement, pointsModel, api);
+    boardController.render();
+
+    document.querySelector(`.trip-main__event-add-btn`).addEventListener(`click`, () => {
+      boardController.createPoint();
+    });
   });
 

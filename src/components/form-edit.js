@@ -3,7 +3,7 @@ import moment from 'moment';
 import 'flatpickr/dist/flatpickr.min.css';
 import 'flatpickr/dist/themes/light.css';
 import {eventTypes, transferNames} from "../const";
-// import {formatDateTime} from "../utils/common";
+import {capitalize, formatDateTime} from "../utils/common";
 import AbstractSmartComponent from "./abstract-smart-component";
 
 export const getDestination = (destinationName, allDestinations) => {
@@ -12,6 +12,11 @@ export const getDestination = (destinationName, allDestinations) => {
 
 const getOptions = (optionType, allOptions) => {
   return allOptions.find((option) => option.type === optionType);
+};
+
+const DefaultData = {
+  deleteButtonText: `Cancel`,
+  saveButtonText: `Save`,
 };
 
 export default class FormEdit extends AbstractSmartComponent {
@@ -25,6 +30,8 @@ export default class FormEdit extends AbstractSmartComponent {
 
     this._destinationsList = destinationsList;
     this._optionsList = optionsList;
+
+    this._externalData = DefaultData;
 
     // this._text = this._formEdit.destination.description;
     // this._city = this._formEdit.destination.name;
@@ -88,9 +95,11 @@ export default class FormEdit extends AbstractSmartComponent {
     }).join(`\n`);
   }
 
-  _createFormEditTemplate() {
+  _createFormEditTemplate(externalData) {
     const isBlockSaveButton = (this._dateStart >= this._dateEnd) || (this._price <= 0);
-    // console.log(this._dateStart);
+
+    const deleteButtonText = externalData.deleteButtonText;
+    const saveButtonText = externalData.saveButtonText;
 
     return (
       `<li class="trip-events__item">
@@ -118,9 +127,9 @@ export default class FormEdit extends AbstractSmartComponent {
 
           <div class="event__field-group  event__field-group--destination">
             <label class="event__label  event__type-output" for="event-destination-1">
-              ${this._eventType} ${transferNames.includes(this._eventType) ? `to` : `in`}
+              ${capitalize(this._eventType)} ${transferNames.includes(this._eventType) ? `to` : `in`}
             </label>
-            <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${this._destination.name}" list="destination-list-1" required>
+            <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${this._destination ? this._destination.name : ``}" list="destination-list-1" required>
             <datalist id="destination-list-1">
               ${this._createDestinationList()}
             </datalist>
@@ -130,12 +139,12 @@ export default class FormEdit extends AbstractSmartComponent {
             <label class="visually-hidden" for="event-start-time-1">
               From
             </label>
-            <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${this._dateStart}">
+            <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${formatDateTime(this._dateStart)}">
             —
             <label class="visually-hidden" for="event-end-time-1">
               To
             </label>
-            <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${this._dateEnd}">
+            <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${formatDateTime(this._dateEnd)}">
           </div>
 
           <div class="event__field-group  event__field-group--price">
@@ -146,8 +155,8 @@ export default class FormEdit extends AbstractSmartComponent {
             <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${this._price}">
           </div>
 
-          <button class="event__save-btn  btn  btn--blue" type="submit" ${isBlockSaveButton ? `disabled` : ``}>Save</button>
-          <button class="event__reset-btn" type="reset">Cancel</button>
+          <button class="event__save-btn  btn  btn--blue" type="submit" ${isBlockSaveButton ? `disabled` : ``}>${saveButtonText}</button>
+          <button class="event__reset-btn" type="reset">${deleteButtonText}</button>
           <input id="event-favorite-1" class="event__favorite-checkbox  visually-hidden" type="checkbox" name="event-favorite"
           ${this._formEdit.isFavorite ? `checked` : ``}>
           <label class="event__favorite-btn" for="event-favorite-1">
@@ -165,8 +174,9 @@ export default class FormEdit extends AbstractSmartComponent {
             <div class="event__available-offers">
               ${this._createOptionsList()}
           </section>
+          ${this._destination ?
 
-          <section class="event__section  event__section--destination">
+        `<section class="event__section  event__section--destination">
             <h3 class="event__section-title  event__section-title--destination">Destination</h3>
             <p class="event__destination-description">${this._destination.description}</p>
 
@@ -175,7 +185,9 @@ export default class FormEdit extends AbstractSmartComponent {
               ${this._createPhotoList()}
               </div>
             </div>
-          </section>
+          </section>)`
+        : ``
+      }
         </section>
       </form>
     </li>`
@@ -183,7 +195,12 @@ export default class FormEdit extends AbstractSmartComponent {
   }
 
   getTemplate() {
-    return this._createFormEditTemplate();
+    return this._createFormEditTemplate(this._externalData);
+  }
+
+  setData(data) {
+    this._externalData = Object.assign({}, DefaultData, data);
+    this.rerender();
   }
 
   setSubmitHandler(handler) {
@@ -286,13 +303,19 @@ export default class FormEdit extends AbstractSmartComponent {
     // return parseFormData(formData, this._destinationsList, this._options);
   }
 
+  getOptions() {
+    return this._options;
+  }
+
   _subscribeOnEvents() {
     const element = this.getElement();
     const dateFormat = `DD/MM/YYYY HH:mm`;
 
     const saveButton = this.getElement().querySelector(`.event__save-btn`);
-    const isBlockSaveButton = (this._dateStart >= this._dateEnd) || (this._destination.name === ``) ||
-      (isNaN(this._price) || (this._price <= 0));
+    const isBlockSaveButton = () => {
+      return (this._dateStart >= this._dateEnd) || (this._destination.name === `` || this._destination.name === undefined) ||
+        (isNaN(this._price) || (this._price <= 0));
+    };
 
     element.querySelector(`#event-start-time-1`)
       .addEventListener(`change`, (evt) => {
@@ -300,9 +323,9 @@ export default class FormEdit extends AbstractSmartComponent {
 
         // console.log((this._dateStart >= this._dateEnd), (this._city === ``),
         //   (isNaN(this._price)), (this._price <= 0));
-        saveButton.disabled = isBlockSaveButton;
+        saveButton.disabled = isBlockSaveButton();
 
-        this.rerender();
+        // this.rerender();
       });
 
     element.querySelector(`#event-end-time-1`)
@@ -311,13 +334,16 @@ export default class FormEdit extends AbstractSmartComponent {
 
         // console.log((this._dateStart >= this._dateEnd), (this._city === ``),
         //   (isNaN(this._price)), (this._price <= 0));
-        saveButton.disabled = isBlockSaveButton;
+        // console.log((this._dateStart >= this._dateEnd), (this._destination.name === `` || this._destination.name === undefined), (isNaN(this._price) || (this._price <= 0)));
+        // console.log(isBlockSaveButton());
+        saveButton.disabled = isBlockSaveButton();
+        // console.log(saveButton.disabled);
 
-        this.rerender();
+        // this.rerender();
       });
 
     element.querySelector(`.event__favorite-checkbox`).addEventListener(`change`, () => {
-      // this._formEdit = Object.assign({}, this._formEdit, {isFavorite: !this._formEdit.isFavorite});
+      this._formEdit = Object.assign({}, this._formEdit, {isFavorite: !this._formEdit.isFavorite});
 
     });
 
@@ -336,24 +362,30 @@ export default class FormEdit extends AbstractSmartComponent {
 
       // console.log((this._dateStart >= this._dateEnd), (this._city === ``),
       //   (isNaN(this._price)), (this._price <= 0));
-      saveButton.disabled = isBlockSaveButton;
+      saveButton.disabled = isBlockSaveButton();
 
       this.rerender();
     });
 
     element.querySelector(`.event__input--price`)
       .addEventListener(`change`, (evt) => {
-        this._price = +evt.target.value;
+        if (!isNaN(+evt.target.value)) {
+          this._price = +evt.target.value;
+          // console.log((this._dateStart >= this._dateEnd), (this._destination.name === ``), (isNaN(this._price)), (this._price <= 0));
+          saveButton.disabled = isBlockSaveButton();
+          return;
+        }
+
+        saveButton.disabled = true;
 
         // console.log((this._dateStart >= this._dateEnd), (this._city === ``),
         //   (isNaN(this._price)), (this._price <= 0));
-        saveButton.disabled = isBlockSaveButton;
-
-        this.rerender();
+        // this.rerender();
       });
 
     const offerCheckboxes = element.querySelectorAll(`.event__offer-checkbox`);
     if (offerCheckboxes) {
+
       offerCheckboxes.forEach((offerCheckbox) => {
         offerCheckbox.addEventListener(`change`, () => {
           const inputName = offerCheckbox.name;

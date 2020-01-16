@@ -66,6 +66,8 @@ export const generateTripDays = (tripCards) => {
 
   const sortTripCards = tripCards.slice().sort((a, b) => a.dateStart - b.dateStart);
 
+  // console.log(tripCards, sortTripCards);
+
   sortTripCards.forEach((card, i, cards) => {
     let previousCard = i > 0 ? cards[i - 1] : null;
 
@@ -83,4 +85,11 @@ export const generateTripDays = (tripCards) => {
 };
 
 export const HIDDEN_CLASS = `visually-hidden`;
+
+export const capitalize = (s) => {
+  if (typeof s !== `string`) {
+    return ``;
+  }
+  return s.charAt(0).toUpperCase() + s.slice(1);
+};
 
