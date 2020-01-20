@@ -1,6 +1,6 @@
 import FilterComponent from '../components/filter.js';
 import {FILTER_TYPE} from '../const.js';
-import {render, replace, RenderPosition} from '../utils/render.js';
+import {render, replace, RENDER_POSITION} from '../utils/render.js';
 
 export default class FilterController {
   constructor(container, pointsModel) {
@@ -32,7 +32,7 @@ export default class FilterController {
     if (oldComponent) {
       replace(this._filterComponent, oldComponent);
     } else {
-      render(container, this._filterComponent, RenderPosition.BEFOREEND);
+      render(container, this._filterComponent, RENDER_POSITION.BEFOREEND);
     }
   }
 

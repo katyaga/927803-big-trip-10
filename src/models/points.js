@@ -6,12 +6,9 @@ export default class Points {
   constructor() {
     this._tripDays = [];
     this._points = [];
-
     this._destinations = [];
     this._offers = [];
-
     this._activeFilterType = FILTER_TYPE.EVERYTHING;
-
     this._filterChangeHandlers = [];
     this._dataChangeHandlers = [];
   }
@@ -72,7 +69,6 @@ export default class Points {
     }
 
     this._points = [].concat(this._points.slice(0, index), this._points.slice(index + 1));
-
     this._callHandlers(this._dataChangeHandlers);
 
     return true;
@@ -86,8 +82,6 @@ export default class Points {
     }
 
     this._points = [].concat(this._points.slice(0, index), point, this._points.slice(index + 1));
-
-    // this._dataChangeHandlers.forEach((handler) => handler());
     this._callHandlers(this._dataChangeHandlers);
 
     return true;

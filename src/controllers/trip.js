@@ -1,7 +1,7 @@
 import SortComponent, {SortType} from "../components/sort";
 import TripDaysComponent from "../components/trip-days";
 import NoPointsComponent from "../components/no-points";
-import {render, RenderPosition} from "../utils/render";
+import {render, RENDER_POSITION} from "../utils/render";
 import TripDayComponent from "../components/trip-day";
 import PointController, {Mode as PointControllerMode, EmptyPoint} from "./point";
 import {HIDDEN_CLASS} from "../utils/common";
@@ -43,10 +43,10 @@ export default class TripController {
     const isTripPoints = this._tripPoints.length > 0;
 
     if (!isTripPoints) {
-      render(this._container, this._noPointsComponent, RenderPosition.BEFOREEND);
+      render(this._container, this._noPointsComponent, RENDER_POSITION.BEFOREEND);
     } else {
-      render(this._container, this._sortComponent, RenderPosition.BEFOREEND);
-      render(this._container, this._tripDaysComponent, RenderPosition.BEFOREEND);
+      render(this._container, this._sortComponent, RENDER_POSITION.BEFOREEND);
+      render(this._container, this._tripDaysComponent, RENDER_POSITION.BEFOREEND);
       this._renderTripPoints(this._tripDays, this._tripPoints);
     }
   }
@@ -147,7 +147,7 @@ export default class TripController {
     if (this._sortComponent.getSortType() === `event`) {
       pointsDays.forEach((tripDay, i) => {
         let tripDayComponent = new TripDayComponent(tripDay, i);
-        render(this._tripDaysComponent.getElement(), tripDayComponent, RenderPosition.BEFOREEND);
+        render(this._tripDaysComponent.getElement(), tripDayComponent, RENDER_POSITION.BEFOREEND);
         const tripEventsListElement = document.querySelectorAll(`.trip-events__list`);
 
         tripDay.forEach((tripCard) => {
@@ -159,7 +159,7 @@ export default class TripController {
     } else {
       points.forEach((tripCard) => {
         let tripDayComponent = new TripDayComponent();
-        render(this._tripDaysComponent.getElement(), tripDayComponent, RenderPosition.BEFOREEND);
+        render(this._tripDaysComponent.getElement(), tripDayComponent, RENDER_POSITION.BEFOREEND);
         const tripEventsListElement = document.querySelector(`.trip-events__list`);
 
         const pointController = new PointController(tripEventsListElement, onDataChange, onViewChange, this._pointsModel);

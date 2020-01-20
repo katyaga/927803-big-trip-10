@@ -1,7 +1,7 @@
 import TripCardComponent from "../components/trip-card";
 import FormEditComponent from "../components/form-edit";
 import Point from '../models/point.js';
-import {render, RenderPosition, remove, replace} from "../utils/render";
+import {render, RENDER_POSITION, remove, replace} from "../utils/render";
 import {getDestination} from "../components/form-edit";
 import moment from "moment";
 
@@ -99,7 +99,7 @@ export default class PointController {
           replace(this._editCardComponent, oldPointEditComponent);
           this._replaceEditToCard();
         } else {
-          render(this._container, this._cardComponent, RenderPosition.BEFOREEND);
+          render(this._container, this._cardComponent, RENDER_POSITION.BEFOREEND);
         }
         break;
       case Mode.ADDING:
@@ -108,7 +108,7 @@ export default class PointController {
           remove(oldPointEditComponent);
         }
         document.addEventListener(`keydown`, this._onEscKeyDown);
-        render(this._container, this._editCardComponent, RenderPosition.AFTERBEGIN);
+        render(this._container, this._editCardComponent, RENDER_POSITION.AFTERBEGIN);
         break;
     }
   }
