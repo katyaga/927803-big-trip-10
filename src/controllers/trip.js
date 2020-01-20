@@ -12,9 +12,6 @@ export default class TripController {
     this._pointsModel = pointsModel;
     this._api = api;
 
-    // this._destinations = this._pointsModel.getDestinations();
-    // this._offers = this._pointsModel.getOffers();
-
     this._tripCardsControllers = [];
     this._sortComponent = new SortComponent();
     this._noPointsComponent = new NoPointsComponent();
@@ -51,14 +48,6 @@ export default class TripController {
       render(this._container, this._sortComponent, RenderPosition.BEFOREEND);
       render(this._container, this._tripDaysComponent, RenderPosition.BEFOREEND);
       this._renderTripPoints(this._tripDays, this._tripPoints);
-      // const getUniqItems = (item, index, array) => {
-      //   return array.indexOf(item) === index;
-      // };
-      // const getTrevelTypes = (points) => {
-      //   return points.flat().map((point) => point.type)
-      //     .filter(getUniqItems);
-      // };
-      // console.log(getTrevelTypes(this._tripPoints));
     }
   }
 
@@ -74,12 +63,8 @@ export default class TripController {
           .then((pointModel) => {
             this._pointsModel.addPoint(pointModel);
             pointController.render(pointModel, PointControllerMode.DEFAULT);
-            // this._pointsModel.addPoint(newData);
             this._updatePoints();
-            // pointController.render(newData, PointControllerMode.DEFAULT);
-            //
             this._tripCardsControllers = [].concat(pointController, this._tripCardsControllers);
-            // this._updatePoints();
           })
           .catch(() => {
             pointController.shake();
@@ -94,10 +79,7 @@ export default class TripController {
         .catch(() => {
           pointController.shake();
         });
-      // this._pointsModel.removePoint(oldData.id);
-      // this._updatePoints();
     } else {
-      // console.log(newData);
       this._api.updatePoint(oldData.id, newData)
         .then((pointModel) => {
           const isSuccess = this._pointsModel.updatePoint(oldData.id, pointModel);
@@ -110,12 +92,6 @@ export default class TripController {
         .catch(() => {
           pointController.shake();
         });
-      // const isSuccess = this._pointsModel.updatePoints(oldData.id, newData);
-      //
-      // if (isSuccess) {
-      //   pointController.render(newData, PointControllerMode.DEFAULT);
-      //   this._updatePoints();
-      // }
     }
   }
 
@@ -128,7 +104,6 @@ export default class TripController {
 
       case SortType.TIME:
         sortedCards = tripPoints.slice().sort((a, b) => (b.dateEnd - b.dateStart) - (a.dateEnd - a.dateStart));
-        // sortedCards = tripPoints.slice().sort((a, b) => b.duration - a.duration);
         break;
       case SortType.PRICE:
         sortedCards = tripPoints.slice().sort((a, b) => b.price - a.price);

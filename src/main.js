@@ -59,15 +59,6 @@ siteMenuComponent.setClickHandler((evt) => {
 pointsModel.setDataChangeHandler(() => {
   const points = pointsModel.getFilteredDays().flat();
   init(points);
-  // if (routeComponent) {
-  //   remove(routeComponent);
-  // }
-  // routeComponent = new RouteComponent(points);
-  // render(tripInfoElement, routeComponent, RenderPosition.AFTERBEGIN);
-  // renderTravelCost(points);
-  // statisticsComponent = new StatisticsComponent(points);
-  // render(tripEventsElement, statisticsComponent, RenderPosition.AFTEREND);
-  // statisticsComponent.hide();
 });
 
 api.getPoints()

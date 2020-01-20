@@ -18,46 +18,27 @@ export const getDurationDateTime = (start, end) => {
     const days = duration.get(`days`);
     if (days) {
       return `${days < 10 ? `0${days}D ` : `${days}D`} `;
-    } else {
-      return ``;
     }
+    return ``;
   };
+
   const getHours = () => {
     const hours = duration.get(`hours`);
     if (hours) {
       return `${hours < 10 ? `0${hours}H ` : `${hours}H `}`;
-    } else {
-      return ``;
     }
+    return ``;
   };
 
   const getMinutes = () => {
     const minutes = duration.get(`minutes`);
     if (minutes) {
       return `${minutes < 10 ? `0${minutes}M ` : `${minutes}M `}`;
-    } else {
-      return ``;
     }
+    return ``;
   };
 
   return (`${getDays()}${getHours()}${getMinutes()}`);
-};
-
-export const shuffleArray = (array) => {
-  return array.slice().sort(() => Math.random() - 0.5);
-};
-
-export const getRandomBoolean = () => {
-  return (Math.random() - 0.5) > 0;
-};
-
-export const getRandomRange = (min, max) => {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
-};
-
-export const getRandomElement = (arr) => {
-  const rand = getRandomRange(0, arr.length - 1);
-  return arr[rand];
 };
 
 export const generateTripDays = (tripCards) => {
@@ -65,8 +46,6 @@ export const generateTripDays = (tripCards) => {
   let currentCards = [];
 
   const sortTripCards = tripCards.slice().sort((a, b) => a.dateStart - b.dateStart);
-
-  // console.log(tripCards, sortTripCards);
 
   sortTripCards.forEach((card, i, cards) => {
     let previousCard = i > 0 ? cards[i - 1] : null;

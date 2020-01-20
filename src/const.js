@@ -1,10 +1,3 @@
-export const cities = [
-  `Amsterdam`,
-  `Geneva`,
-  `Chamonix`,
-  `Saint Petersburg`,
-];
-
 export const eventTypes = [
   {
     name: `taxi`,

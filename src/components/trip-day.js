@@ -41,8 +41,7 @@ export default class TripDay extends AbstractComponent {
   getTemplate() {
     if (this._tripDay !== undefined && this._index !== undefined) {
       return this._createTripDayWithDay();
-    } else {
-      return this._createTripDayWithOutDay();
     }
+    return this._createTripDayWithOutDay();
   }
 }

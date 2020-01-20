@@ -130,7 +130,6 @@ const renderPricesChart = (pricesCtx, points) => {
     });
 
     return arrTypesPrice.map((uniqTravelType) => uniqTravelType.price);
-
   };
 
   createChart(pricesCtx, `MONEY`, uniqTravelTypes, getTravelPrices);
@@ -147,7 +146,6 @@ const renderTransportCountChart = (transportCountCtx, points) => {
       count: 0,
     };
   });
-  // const transportTypeNames = uniqTransportTypes.map((transportType) => transportType);
 
   const getTransportCount = () => {
     points.forEach((point) => {
@@ -168,7 +166,6 @@ const renderTransportCountChart = (transportCountCtx, points) => {
 
 const renderTimeChart = (timeSpentCtx, points) => {
   const uniqTravelTypes = getTravelTypes(points);
-  // const typeNames = uniqTravelTypes.map((getTravelType) => getTravelType.name);
   const arrTypesTime = uniqTravelTypes.map((uniqTravelType) => {
     return {
       name: uniqTravelType,
@@ -177,10 +174,6 @@ const renderTimeChart = (timeSpentCtx, points) => {
   });
 
   const getTimeSpent = () => {
-    // uniqTravelTypes.forEach((uniqTravelType) => {
-    //   uniqTravelType.duration = 0;
-    // });
-
     points.forEach((point) => {
       const duration = point.dateEnd - point.dateStart;
       const uniqTravelType = arrTypesTime.find(

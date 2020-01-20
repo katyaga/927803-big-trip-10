@@ -25,10 +25,8 @@ export const EmptyPoint = {
 
 const parseFormData = (formData, destinationsList, pointOptions) => {
   const dateFormat = `DD/MM/YYYY HH:mm`;
-  // console.log(Boolean(formData.get(`event-favorite`) === `on`));
 
   return new Point({
-    // description: formData.get(`text`),
     'type': formData.get(`event-type`),
     'destination': getDestination(formData.get(`event-destination`), destinationsList),
     'offers': pointOptions,
@@ -36,8 +34,6 @@ const parseFormData = (formData, destinationsList, pointOptions) => {
     'date_from': moment(formData.get(`event-start-time`), dateFormat).toDate().toISOString(),
     'date_to': moment(formData.get(`event-end-time`), dateFormat).toDate().toISOString(),
     'is_favorite': Boolean(formData.get(`event-favorite`) === `on`),
-    // dateStart: (formData.get(`event-start-time`)).toISOString(),
-    // dateEnd: (formData.get(`event-end-time`)).toISOString(),
   });
 };
 
@@ -66,11 +62,6 @@ export default class PointController {
     const oldPointEditComponent = this._editCardComponent;
     this._mode = mode;
 
-    // const destinations = this._pointsModel.getDestinations();
-    // const offers = this._pointsModel.getOffers();
-    // const pointOffers = card.options.filter((cardOption) => cardOption.checked);
-    // console.log(pointOffers);
-
     this._cardComponent = new TripCardComponent(card);
     this._editCardComponent = new FormEditComponent(card, this._destinations, this._offers);
 
@@ -79,48 +70,18 @@ export default class PointController {
       document.addEventListener(`keydown`, this._onEscKeyDown);
     });
 
-    // this._editCardComponent.setFavoritesButtonClickHandler(() => {
-    //   // this._onDataChange(this, card, Object.assign({}, card, {
-    //   //   isFavorite: !card.isFavorite,
-    //   // }));
-    //
-    //   const newPoint = Point.clone(card);
-    //   newPoint.isFavorite = !newPoint.isFavorite;
-    //
-    //   this._onDataChange(this, card, newPoint);
-    // });
-
-    // this._editCardComponent.setSubmitHandler((evt) => {
-    //   evt.preventDefault();
-    //   this._replaceEditToCard();
-    // });
-
-    // this._editCardComponent.setCloseButtonClickHandler(() => {
-    //   this._replaceEditToCard();
-    // });
-
-    // if (oldPointEditComponent && oldPointComponent) {
-    //   replace(this._cardComponent, oldPointComponent);
-    //   replace(this._editCardComponent, oldPointEditComponent);
-    // } else {
-    //   render(this._container, this._cardComponent, RenderPosition.BEFOREEND);
-    // }
-
     this._editCardComponent.setSubmitHandler((evt) => {
       evt.preventDefault();
 
       this._editCardComponent.setData({
         saveButtonText: `Saving...`,
       });
-      // const pointOffers = card.options.filter((cardOption) => cardOption.checked);
 
       const pointOffers = this._editCardComponent.getOptions().filter((option) => option.checked);
 
       const formData = this._editCardComponent.getData();
       const data = parseFormData(formData, this._destinations, pointOffers);
 
-      // console.log(data);
-      // const data = this._editCardComponent.getData();
       this._onDataChange(this, card, data);
     });
 

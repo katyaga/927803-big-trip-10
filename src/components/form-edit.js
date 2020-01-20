@@ -33,16 +33,11 @@ export default class FormEdit extends AbstractSmartComponent {
 
     this._externalData = DefaultData;
 
-    // this._text = this._formEdit.destination.description;
-    // this._city = this._formEdit.destination.name;
-    // this._photo = this._formEdit.destination.pictures;
-
     this._dateStart = this._formEdit.dateStart;
     this._dateEnd = this._formEdit.dateEnd;
     this._price = this._formEdit.price;
 
     this._submitHandler = null;
-    this._resetHandler = null;
     this._flatpickr = null;
 
     this._applyFlatpickr();
@@ -249,16 +244,8 @@ export default class FormEdit extends AbstractSmartComponent {
       .addEventListener(`change`, handler);
   }
 
-  // setCloseButtonClickHandler(handler) {
-  //   if (!this._resetHandler) {
-  //     this._resetHandler = handler;
-  //   }
-  //   this.getElement().querySelector(`.event__reset-btn`).addEventListener(`click`, this._resetHandler);
-  // }
-
   recoveryListeners() {
     this.setSubmitHandler(this._submitHandler);
-    // this.setCloseButtonClickHandler(this._resetHandler);
     this.setDeleteButtonClickHandler(this._deleteButtonClickHandler);
     this._subscribeOnEvents();
   }
@@ -270,16 +257,9 @@ export default class FormEdit extends AbstractSmartComponent {
 
   reset() {
     const formEdit = this._formEdit;
-
     this._eventType = formEdit.type;
     this._options = formEdit.options;
-
     this._destination = formEdit.destination;
-
-    // this._text = formEdit.text;
-    // this._city = formEdit.city;
-    // this._price = formEdit.price;
-
     this._dateStart = formEdit.dateStart;
     this._dateEnd = formEdit.dateEnd;
 
@@ -298,9 +278,6 @@ export default class FormEdit extends AbstractSmartComponent {
   getData() {
     const form = this.getElement().querySelector(`.trip-events__item`);
     return new FormData(form);
-
-    // const formData = new FormData(form);
-    // return parseFormData(formData, this._destinationsList, this._options);
   }
 
   getOptions() {
@@ -321,25 +298,14 @@ export default class FormEdit extends AbstractSmartComponent {
       .addEventListener(`change`, (evt) => {
         this._dateStart = moment(evt.target.value, dateFormat);
 
-        // console.log((this._dateStart >= this._dateEnd), (this._city === ``),
-        //   (isNaN(this._price)), (this._price <= 0));
         saveButton.disabled = isBlockSaveButton();
-
-        // this.rerender();
       });
 
     element.querySelector(`#event-end-time-1`)
       .addEventListener(`change`, (evt) => {
         this._dateEnd = moment(evt.target.value, dateFormat);
 
-        // console.log((this._dateStart >= this._dateEnd), (this._city === ``),
-        //   (isNaN(this._price)), (this._price <= 0));
-        // console.log((this._dateStart >= this._dateEnd), (this._destination.name === `` || this._destination.name === undefined), (isNaN(this._price) || (this._price <= 0)));
-        // console.log(isBlockSaveButton());
         saveButton.disabled = isBlockSaveButton();
-        // console.log(saveButton.disabled);
-
-        // this.rerender();
       });
 
     element.querySelector(`.event__favorite-checkbox`).addEventListener(`change`, () => {
@@ -360,8 +326,6 @@ export default class FormEdit extends AbstractSmartComponent {
         this._destination = getDestination(evt.target.value, this._destinationsList);
       }
 
-      // console.log((this._dateStart >= this._dateEnd), (this._city === ``),
-      //   (isNaN(this._price)), (this._price <= 0));
       saveButton.disabled = isBlockSaveButton();
 
       this.rerender();
@@ -371,16 +335,12 @@ export default class FormEdit extends AbstractSmartComponent {
       .addEventListener(`change`, (evt) => {
         if (!isNaN(+evt.target.value)) {
           this._price = +evt.target.value;
-          // console.log((this._dateStart >= this._dateEnd), (this._destination.name === ``), (isNaN(this._price)), (this._price <= 0));
+
           saveButton.disabled = isBlockSaveButton();
           return;
         }
 
         saveButton.disabled = true;
-
-        // console.log((this._dateStart >= this._dateEnd), (this._city === ``),
-        //   (isNaN(this._price)), (this._price <= 0));
-        // this.rerender();
       });
 
     const offerCheckboxes = element.querySelectorAll(`.event__offer-checkbox`);

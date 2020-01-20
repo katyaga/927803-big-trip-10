@@ -10,8 +10,6 @@ export const MenuItem = {
 export default class SiteMenu extends AbstractComponent {
   constructor() {
     super();
-
-    this._active = MenuItem.TABLE;
   }
 
   _createSiteMenuItem(filter, isActive) {
