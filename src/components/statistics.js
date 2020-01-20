@@ -2,7 +2,7 @@ import Chart from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import moment from 'moment';
 import AbstractSmartComponent from './abstract-smart-component.js';
-import {transferNames} from "../const";
+import {TRANSFER_NAMES} from "../const";
 
 const getUniqItems = (item, index, array) => {
   return array.indexOf(item) === index;
@@ -137,7 +137,7 @@ const renderPricesChart = (pricesCtx, points) => {
 
 const renderTransportCountChart = (transportCountCtx, points) => {
   const uniqTransportTypes = getTravelTypes(points).filter(
-      (travelType) => transferNames.includes(travelType)
+      (travelType) => TRANSFER_NAMES.includes(travelType)
   );
 
   const arrTypesCount = uniqTransportTypes.map((uniqTransportType) => {
@@ -149,7 +149,7 @@ const renderTransportCountChart = (transportCountCtx, points) => {
 
   const getTransportCount = () => {
     points.forEach((point) => {
-      if (transferNames.includes(point.type)) {
+      if (TRANSFER_NAMES.includes(point.type)) {
         const uniqTransportType = arrTypesCount.find(
             (item) => item.name === point.type
         );

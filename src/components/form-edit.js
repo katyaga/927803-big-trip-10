@@ -2,7 +2,7 @@ import flatpickr from 'flatpickr';
 import moment from 'moment';
 import 'flatpickr/dist/flatpickr.min.css';
 import 'flatpickr/dist/themes/light.css';
-import {eventTypes, transferNames} from "../const";
+import {EVENT_TYPES, TRANSFER_NAMES} from "../const";
 import {capitalize, formatDateTime} from "../utils/common";
 import AbstractSmartComponent from "./abstract-smart-component";
 
@@ -110,19 +110,19 @@ export default class FormEdit extends AbstractSmartComponent {
             <div class="event__type-list">
               <fieldset class="event__type-group">
                 <legend class="visually-hidden">Transfer</legend>
-                ${this._createEventTypeItem(eventTypes, `transfer`)}
+                ${this._createEventTypeItem(EVENT_TYPES, `transfer`)}
               </fieldset>
 
               <fieldset class="event__type-group">
                 <legend class="visually-hidden">Activity</legend>
-                ${this._createEventTypeItem(eventTypes, `activity`)}
+                ${this._createEventTypeItem(EVENT_TYPES, `activity`)}
               </fieldset>
             </div>
           </div>
 
           <div class="event__field-group  event__field-group--destination">
             <label class="event__label  event__type-output" for="event-destination-1">
-              ${capitalize(this._eventType)} ${transferNames.includes(this._eventType) ? `to` : `in`}
+              ${capitalize(this._eventType)} ${TRANSFER_NAMES.includes(this._eventType) ? `to` : `in`}
             </label>
             <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${this._destination ? this._destination.name : ``}" list="destination-list-1" required>
             <datalist id="destination-list-1">
@@ -314,7 +314,7 @@ export default class FormEdit extends AbstractSmartComponent {
     });
 
     element.querySelector(`.event__type-list`).addEventListener(`change`, (evt) => {
-      this._eventType = eventTypes.find((eventType) => eventType.name === evt.target.value).name;
+      this._eventType = EVENT_TYPES.find((eventType) => eventType.name === evt.target.value).name;
       this._options = (getOptions(evt.target.value, this._optionsList))[`offers`];
 
       this.rerender();

@@ -1,4 +1,4 @@
-import {MonthNames} from "../const";
+import {MONTH_NAMES} from "../const";
 import AbstractComponent from "./abstarct-component";
 
 export default class TripDay extends AbstractComponent {
@@ -11,7 +11,7 @@ export default class TripDay extends AbstractComponent {
 
   _getTripDaysDay(day) {
     const dayDate = day[0].dateStart;
-    return `${MonthNames[dayDate.getMonth()]} ${dayDate.getDate()}`;
+    return `${MONTH_NAMES[dayDate.getMonth()]} ${dayDate.getDate()}`;
   }
 
   _createTripDayWithDay() {

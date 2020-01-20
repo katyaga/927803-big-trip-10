@@ -1,5 +1,5 @@
 import {getPointsByFilter} from '../utils/filter.js';
-import {FilterType} from '../const.js';
+import {FILTER_TYPE} from '../const.js';
 import {generateTripDays} from "../utils/common.js";
 
 export default class Points {
@@ -10,7 +10,7 @@ export default class Points {
     this._destinations = [];
     this._offers = [];
 
-    this._activeFilterType = FilterType.EVERYTHING;
+    this._activeFilterType = FILTER_TYPE.EVERYTHING;
 
     this._filterChangeHandlers = [];
     this._dataChangeHandlers = [];

@@ -1,4 +1,4 @@
-import {MonthNames} from "../const";
+import {MONTH_NAMES} from "../const";
 import AbstractComponent from "./abstarct-component";
 
 export default class Route extends AbstractComponent {
@@ -12,9 +12,9 @@ export default class Route extends AbstractComponent {
   _getRouteDays() {
     const dateStart = this._tripCards[0].dateStart;
     const dateEnd = this._tripCards[this._tripCards.length - 1].dateEnd;
-    const monthStart = MonthNames[dateStart.getMonth()];
+    const monthStart = MONTH_NAMES[dateStart.getMonth()];
     const dayStart = dateStart.getDate();
-    const monthEnd = MonthNames[dateEnd.getMonth()];
+    const monthEnd = MONTH_NAMES[dateEnd.getMonth()];
     const dayEnd = dateEnd.getDate();
     return `${monthStart} ${dayStart} - ${monthStart === monthEnd ? `` : monthEnd} ${dayEnd}`;
   }

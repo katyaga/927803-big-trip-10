@@ -1,4 +1,4 @@
-export const eventTypes = [
+export const EVENT_TYPES = [
   {
     name: `taxi`,
     title: `Taxi`,
@@ -51,17 +51,17 @@ export const eventTypes = [
   },
 ];
 
-export const transferNames = eventTypes.map(
+export const TRANSFER_NAMES = EVENT_TYPES.map(
     (eventType) => eventType.group === `transfer` && eventType.name
 ).filter((item) => item);
 
-export const FilterType = {
+export const FILTER_TYPE = {
   EVERYTHING: `everything`,
   FUTURE: `future`,
   PAST: `past`,
 };
 
-export const MonthNames = [
+export const MONTH_NAMES = [
   `Jan`,
   `Feb`,
   `Mar`,
