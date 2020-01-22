@@ -1,9 +1,9 @@
 import SortComponent, {SortType} from "../components/sort";
 import TripDaysComponent from "../components/trip-days";
 import NoPointsComponent from "../components/no-points";
-import {render, RENDER_POSITION} from "../utils/render";
+import {render, renderPosition} from "../utils/render";
 import TripDayComponent from "../components/trip-day";
-import PointController, {Mode as PointControllerMode, EmptyPoint} from "./point";
+import PointController, {Mode as PointControllerMode, emptyPoint} from "./point";
 import {HIDDEN_CLASS} from "../utils/common";
 
 export default class TripController {
@@ -43,16 +43,16 @@ export default class TripController {
     const isTripPoints = this._tripPoints.length > 0;
 
     if (!isTripPoints) {
-      render(this._container, this._noPointsComponent, RENDER_POSITION.BEFOREEND);
+      render(this._container, this._noPointsComponent, renderPosition.BEFOREEND);
     } else {
-      render(this._container, this._sortComponent, RENDER_POSITION.BEFOREEND);
-      render(this._container, this._tripDaysComponent, RENDER_POSITION.BEFOREEND);
+      render(this._container, this._sortComponent, renderPosition.BEFOREEND);
+      render(this._container, this._tripDaysComponent, renderPosition.BEFOREEND);
       this._renderTripPoints(this._tripDays, this._tripPoints);
     }
   }
 
   _onDataChange(pointController, oldData, newData) {
-    if (oldData === EmptyPoint) {
+    if (oldData === emptyPoint) {
       this._creatingPoint = null;
 
       if (newData === null) {
@@ -127,7 +127,7 @@ export default class TripController {
     const taskListElement = this._tripDaysComponent.getElement();
 
     this._creatingPoint = new PointController(taskListElement, this._onDataChange, this._onViewChange, this._pointsModel);
-    this._creatingPoint.render(EmptyPoint, PointControllerMode.ADDING);
+    this._creatingPoint.render(emptyPoint, PointControllerMode.ADDING);
   }
 
   _removePoints() {
@@ -146,8 +146,8 @@ export default class TripController {
 
     if (this._sortComponent.getSortType() === `event`) {
       pointsDays.forEach((tripDay, i) => {
-        let tripDayComponent = new TripDayComponent(tripDay, i);
-        render(this._tripDaysComponent.getElement(), tripDayComponent, RENDER_POSITION.BEFOREEND);
+        const tripDayComponent = new TripDayComponent(tripDay, i);
+        render(this._tripDaysComponent.getElement(), tripDayComponent, renderPosition.BEFOREEND);
         const tripEventsListElement = document.querySelectorAll(`.trip-events__list`);
 
         tripDay.forEach((tripCard) => {
@@ -159,7 +159,7 @@ export default class TripController {
     } else {
       points.forEach((tripCard) => {
         let tripDayComponent = new TripDayComponent();
-        render(this._tripDaysComponent.getElement(), tripDayComponent, RENDER_POSITION.BEFOREEND);
+        render(this._tripDaysComponent.getElement(), tripDayComponent, renderPosition.BEFOREEND);
         const tripEventsListElement = document.querySelector(`.trip-events__list`);
 
         const pointController = new PointController(tripEventsListElement, onDataChange, onViewChange, this._pointsModel);

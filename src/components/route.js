@@ -1,6 +1,8 @@
 import {MONTH_NAMES} from "../const";
 import AbstractComponent from "./abstarct-component";
 
+const maxShowingCitiesCount = 3;
+
 export default class Route extends AbstractComponent {
   constructor(tripDays) {
     super();
@@ -20,12 +22,12 @@ export default class Route extends AbstractComponent {
   }
 
   _getRouteCities() {
-    let routeCityList = [];
+    const routeCityList = [];
     this._tripCards.forEach((tripCard) => {
       routeCityList.push(tripCard.destination.name);
     });
-    let routeCityCount = routeCityList.length;
-    if (routeCityCount <= 3) {
+    const routeCityCount = routeCityList.length;
+    if (routeCityCount <= maxShowingCitiesCount) {
       return routeCityList.join(` - `);
     }
     return `${routeCityList[0]} - ... - ${routeCityList[routeCityCount - 1]}`;

@@ -5,7 +5,7 @@ module.exports = {
   plugins: [
 // Оставляем только одну локаль.
     new MomentLocalesPlugin({
-      localesToKeep: [`es-us`],
+      localesToKeep: [`ru`],
     }),
   ],
   mode: `development`,

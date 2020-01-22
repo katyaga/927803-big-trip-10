@@ -1,3 +1,11 @@
+const setChecked = (options) => {
+  options.forEach((option) => {
+    option.checked = true;
+  });
+
+  return options;
+};
+
 export default class Point {
   constructor(data) {
     this.id = data[`id`];
@@ -31,16 +39,4 @@ export default class Point {
   static parsePoints(data) {
     return data.map(Point.parsePoint);
   }
-
-  static clone(data) {
-    return new Point(data.toRAW());
-  }
 }
-
-const setChecked = (arr) => {
-  arr.forEach((elem) => {
-    elem.checked = true;
-  });
-
-  return arr;
-};

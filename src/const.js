@@ -55,7 +55,7 @@ export const TRANSFER_NAMES = EVENT_TYPES.map(
     (eventType) => eventType.group === `transfer` && eventType.name
 ).filter((item) => item);
 
-export const FILTER_TYPE = {
+export const FilterType = {
   EVERYTHING: `everything`,
   FUTURE: `future`,
   PAST: `past`,

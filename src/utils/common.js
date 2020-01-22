@@ -48,7 +48,7 @@ export const generateTripDays = (tripCards) => {
   const sortTripCards = tripCards.slice().sort((a, b) => a.dateStart - b.dateStart);
 
   sortTripCards.forEach((card, i, cards) => {
-    let previousCard = i > 0 ? cards[i - 1] : null;
+    const previousCard = i > 0 ? cards[i - 1] : null;
 
     if (previousCard && card.dateStart.getDate() !== previousCard.dateStart.getDate()) {
       tripDays.push(currentCards);
@@ -70,5 +70,14 @@ export const capitalize = (s) => {
     return ``;
   }
   return s.charAt(0).toUpperCase() + s.slice(1);
+};
+
+export const generateAuthorization = () => {
+  let authorization = `Basic `;
+  for (let i = 0; i < 3; i++) {
+    let randomString = Math.random().toString(36).substring(7);
+    authorization += randomString;
+  }
+  return authorization;
 };
 

@@ -5,9 +5,11 @@ import StatisticsComponent from './components/statistics.js';
 import FilterController from './controllers/filter.js';
 import TripController from "./controllers/trip";
 import PointsModel from "./models/points";
-import {remove, render, RENDER_POSITION, renderTravelCost} from "./utils/render";
+import {remove, render, renderPosition, renderTravelCost} from "./utils/render";
+import {generateAuthorization} from "./utils/common";
 
-const AUTHORIZATION = `Basic dXNlckBwYXNzd29yZAo=`;
+
+const AUTHORIZATION = generateAuthorization();
 const END_POINT = `https://htmlacademy-es-10.appspot.com/big-trip/`;
 
 const api = new API(END_POINT, AUTHORIZATION);
@@ -21,11 +23,11 @@ const init = (points) => {
     remove(routeComponent);
   }
   routeComponent = new RouteComponent(orderedPoints);
-  render(tripInfoElement, routeComponent, RENDER_POSITION.AFTERBEGIN);
+  render(tripInfoElement, routeComponent, renderPosition.AFTERBEGIN);
   renderTravelCost(pointsModel.getPointsAll());
 
   statisticsComponent = new StatisticsComponent(points);
-  render(tripEventsElement, statisticsComponent, RENDER_POSITION.AFTEREND);
+  render(tripEventsElement, statisticsComponent, renderPosition.AFTEREND);
   statisticsComponent.hide();
 };
 
@@ -39,7 +41,7 @@ const menuTitleElement = tripControlsElement.querySelector(`h2`);
 const tripEventsElement = document.querySelector(`.trip-events`);
 
 const siteMenuComponent = new SiteMenuComponent();
-render(menuTitleElement, siteMenuComponent, RENDER_POSITION.AFTEREND);
+render(menuTitleElement, siteMenuComponent, renderPosition.AFTEREND);
 
 let routeComponent;
 let statisticsComponent;

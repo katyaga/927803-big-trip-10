@@ -1,7 +1,7 @@
 import TripCardComponent from "../components/trip-card";
 import FormEditComponent from "../components/form-edit";
 import Point from '../models/point.js';
-import {render, RENDER_POSITION, remove, replace} from "../utils/render";
+import {render, renderPosition, remove, replace} from "../utils/render";
 import {getDestination} from "../components/form-edit";
 import moment from "moment";
 
@@ -13,7 +13,7 @@ export const Mode = {
   EDIT: `edit`,
 };
 
-export const EmptyPoint = {
+export const emptyPoint = {
   type: `taxi`,
   destination: ``,
   dateStart: Date.now(),
@@ -63,7 +63,7 @@ export default class PointController {
     this._mode = mode;
 
     this._cardComponent = new TripCardComponent(card);
-    this._editCardComponent = new FormEditComponent(card, this._destinations, this._offers);
+    this._editCardComponent = new FormEditComponent(card, this._destinations, this._offers, this._mode);
 
     this._cardComponent.setEditButtonClickHandler(() => {
       this._replaceCardToEdit();
@@ -78,7 +78,6 @@ export default class PointController {
       });
 
       const pointOffers = this._editCardComponent.getOptions().filter((option) => option.checked);
-
       const formData = this._editCardComponent.getData();
       const data = parseFormData(formData, this._destinations, pointOffers);
 
@@ -86,9 +85,11 @@ export default class PointController {
     });
 
     this._editCardComponent.setDeleteButtonClickHandler(() => {
-      this._editCardComponent.setData({
-        deleteButtonText: `Deleting...`,
-      });
+      if (this._mode !== `adding`) {
+        this._editCardComponent.setData({
+          deleteButtonText: `Deleting...`,
+        });
+      }
       this._onDataChange(this, card, null);
     });
 
@@ -99,7 +100,7 @@ export default class PointController {
           replace(this._editCardComponent, oldPointEditComponent);
           this._replaceEditToCard();
         } else {
-          render(this._container, this._cardComponent, RENDER_POSITION.BEFOREEND);
+          render(this._container, this._cardComponent, renderPosition.BEFOREEND);
         }
         break;
       case Mode.ADDING:
@@ -108,7 +109,7 @@ export default class PointController {
           remove(oldPointEditComponent);
         }
         document.addEventListener(`keydown`, this._onEscKeyDown);
-        render(this._container, this._editCardComponent, RENDER_POSITION.AFTERBEGIN);
+        render(this._container, this._editCardComponent, renderPosition.AFTERBEGIN);
         break;
     }
   }
@@ -126,12 +127,12 @@ export default class PointController {
   }
 
   shake() {
-    this._editCardComponent.getElement().style.animation = `shake ${SHAKE_ANIMATION_TIMEOUT / 1000}s`;
-    this._cardComponent.getElement().style.animation = `shake ${SHAKE_ANIMATION_TIMEOUT / 1000}s`;
+    this._editCardComponent.setAnimation(`shake ${SHAKE_ANIMATION_TIMEOUT / 1000}s`);
+    this._cardComponent.setAnimation(`shake ${SHAKE_ANIMATION_TIMEOUT / 1000}s`);
 
     setTimeout(() => {
-      this._editCardComponent.getElement().style.animation = ``;
-      this._cardComponent.getElement().style.animation = ``;
+      this._editCardComponent.setAnimation();
+      this._cardComponent.setAnimation();
 
       this._editCardComponent.setData({
         saveButtonText: `Save`,
@@ -161,7 +162,7 @@ export default class PointController {
 
     if (isEscKey) {
       if (this._mode === Mode.ADDING) {
-        this._onDataChange(this, EmptyPoint, null);
+        this._onDataChange(this, emptyPoint, null);
       }
 
       this._replaceEditToCard();

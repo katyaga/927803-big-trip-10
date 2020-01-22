@@ -71,6 +71,10 @@ export default class TripCard extends AbstractComponent {
     return this._createTripCardTemplate();
   }
 
+  setAnimation(style = ``) {
+    this.getElement().style.animation = style;
+  }
+
   setEditButtonClickHandler(handler) {
     this.getElement().querySelector(`.event__rollup-btn`)
       .addEventListener(`click`, handler);

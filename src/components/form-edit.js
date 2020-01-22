@@ -14,13 +14,14 @@ const getOptions = (optionType, allOptions) => {
   return allOptions.find((option) => option.type === optionType);
 };
 
-const DefaultData = {
-  deleteButtonText: `Cancel`,
+const defaultData = {
+  deleteButtonText: `Delete`,
+  cancelButtonText: `Cancel`,
   saveButtonText: `Save`,
 };
 
 export default class FormEdit extends AbstractSmartComponent {
-  constructor(formEdit, destinationsList, optionsList) {
+  constructor(formEdit, destinationsList, optionsList, mode) {
     super();
 
     this._formEdit = formEdit;
@@ -30,14 +31,16 @@ export default class FormEdit extends AbstractSmartComponent {
 
     this._destinationsList = destinationsList;
     this._optionsList = optionsList;
+    this._mode = mode;
 
-    this._externalData = DefaultData;
+    this._externalData = defaultData;
 
     this._dateStart = this._formEdit.dateStart;
     this._dateEnd = this._formEdit.dateEnd;
     this._price = this._formEdit.price;
 
     this._submitHandler = null;
+    this._resetHandler = null;
     this._flatpickr = null;
 
     this._applyFlatpickr();
@@ -95,6 +98,7 @@ export default class FormEdit extends AbstractSmartComponent {
 
     const deleteButtonText = externalData.deleteButtonText;
     const saveButtonText = externalData.saveButtonText;
+    const cancelButtonText = externalData.cancelButtonText;
 
     return (
       `<li class="trip-events__item">
@@ -151,7 +155,8 @@ export default class FormEdit extends AbstractSmartComponent {
           </div>
 
           <button class="event__save-btn  btn  btn--blue" type="submit" ${isBlockSaveButton ? `disabled` : ``}>${saveButtonText}</button>
-          <button class="event__reset-btn" type="reset">${deleteButtonText}</button>
+          <button class="event__reset-btn" type="reset">${this._mode === `adding` ? `${cancelButtonText}` : `${deleteButtonText}`}</button>
+
           <input id="event-favorite-1" class="event__favorite-checkbox  visually-hidden" type="checkbox" name="event-favorite"
           ${this._formEdit.isFavorite ? `checked` : ``}>
           <label class="event__favorite-btn" for="event-favorite-1">
@@ -194,8 +199,12 @@ export default class FormEdit extends AbstractSmartComponent {
   }
 
   setData(data) {
-    this._externalData = Object.assign({}, DefaultData, data);
+    this._externalData = Object.assign({}, defaultData, data);
     this.rerender();
+  }
+
+  setAnimation(style = ``) {
+    this.getElement().style.animation = style;
   }
 
   setSubmitHandler(handler) {
@@ -212,6 +221,13 @@ export default class FormEdit extends AbstractSmartComponent {
 
     this._deleteButtonClickHandler = handler;
   }
+
+  // setCloseButtonClickHandler(handler) {
+  //   if (!this._resetHandler) {
+  //     this._resetHandler = handler;
+  //   }
+  //   this.getElement().querySelector(`.event__reset-btn`).addEventListener(`click`, this._resetHandler);
+  // }
 
   _applyFlatpickr() {
     if (this._flatpickr) {
@@ -237,11 +253,6 @@ export default class FormEdit extends AbstractSmartComponent {
       minDate: this._dateStart,
       defaultDate: this._dateEnd,
     });
-  }
-
-  setFavoritesButtonClickHandler(handler) {
-    this.getElement().querySelector(`.event__favorite-checkbox`)
-      .addEventListener(`change`, handler);
   }
 
   recoveryListeners() {
